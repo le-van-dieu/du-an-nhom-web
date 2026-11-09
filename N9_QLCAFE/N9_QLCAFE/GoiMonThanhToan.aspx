@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Gọi món & Thanh toán Hóa đơn" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="GoiMonThanhToan.aspx.cs" Inherits="N9_QLCAFE.GoiMonThanhToan" %>
+<%@ Page Title="Gọi món & Thanh toán Hóa đơn" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="GoiMonThanhToan.aspx.cs" Inherits="N9_QLCAFE.GoiMonThanhToan" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 </asp:Content>

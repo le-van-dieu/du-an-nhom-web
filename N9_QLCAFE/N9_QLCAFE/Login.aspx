@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Login.aspx.cs" Inherits="N9_QLCAFE.Login" %>
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Login.aspx.cs" Inherits="N9_QLCAFE.Login" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head runat="server">
