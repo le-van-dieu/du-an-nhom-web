@@ -238,7 +238,7 @@
                 </div>
                 <div class="modal-body p-4">
                     <div class="text-center border-bottom pb-3 mb-3">
-                        <h5 class="fw-bold text-primary mb-1">N9 QLCAFÉ - HÓA ĐƠN BÁN HÀNG</h5>
+                        <h5 class="fw-bold text-primary mb-1">MOON CAFÉ - HÓA ĐƠN BÁN HÀNG</h5>
                         <div class="small text-muted">Mã HĐ: <strong>--</strong> • Đơn hàng: <strong>--</strong></div>
                         <div class="small text-muted">Bàn: <strong>--</strong> • Thu ngân: <strong>--</strong></div>
                         <div class="small text-muted">Ngày giờ: 09/11/2026 14:35</div>

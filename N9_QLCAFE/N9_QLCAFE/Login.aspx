@@ -4,7 +4,7 @@
 <head runat="server">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Đăng nhập hệ thống (F01) - N9 QLCAFÉ</title>
+    <title>Đăng nhập hệ thống (F01) - MOON CAFÉ</title>
     <!-- Google Fonts for Vietnamese Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,7 +15,7 @@
     <style>
         .login-wrapper {
             min-height: 100vh;
-            background: linear-gradient(135deg, #0f265e 0%, #1a3581 50%, rgb(60, 131, 246) 100%);
+            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 50%, rgb(60, 131, 246) 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -47,17 +47,17 @@
                     <!-- CỘT TRÁI: THÔNG TIN HỆ THỐNG NHÓM 9 -->
                     <div class="col-lg-5 login-banner d-none d-lg-flex">
                         <div>
-                            <div class="d-flex align-items-center gap-2 mb-4">
-                                <div class="rounded-3 bg-primary text-white d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
-                                    <i class="bi bi-cup-hot-fill fs-4"></i>
+                            <div class="d-flex align-items-center gap-3 mb-4">
+                                <div class="brand-icon rounded-3 bg-white d-flex align-items-center justify-content-center p-2 shadow-sm" style="width: 48px; height: 48px;">
+                                    <img src="Content/moon-logo.svg" alt="MOON CAFÉ Logo" style="width: 36px; height: 36px;" />
                                 </div>
                                 <div>
-                                    <h5 class="fw-bold text-primary mb-0">N9 QLCAFÉ</h5>
-                                    <small class="text-muted">WebForms • MySQL System</small>
+                                    <h4 class="fw-bold text-primary mb-0">MOON CAFÉ</h4>
+                                    <small class="text-muted">Hệ thống Quản lý Quán Café</small>
                                 </div>
                             </div>
 
-                            <h4 class="fw-bold text-dark mb-3">Hệ thống Quản lý Cửa hàng Café</h4>
+                            <h4 class="fw-bold text-dark mb-3">Hệ thống Quản lý Cửa hàng MOON CAFÉ</h4>
                             <p class="text-muted small mb-4">
                                 Giải pháp quản lý đồng bộ từ đồ uống, bàn & khu vực, đặt bàn trước, gọi món POS, hóa đơn thanh toán đến báo cáo doanh thu.
                             </p>

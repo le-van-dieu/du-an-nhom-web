@@ -1,24 +1,24 @@
 /* =========================================================
-   N9_QLCAFE - Hệ Thống Quản Lý Cửa Hàng Café (Nhóm 9)
-   Theme: Xanh Dương Hoàng Gia & Xanh Hiện Đại rgb(60, 131, 246)
+   MOON CAFÉ - Hệ Thống Quản Lý Cửa Hàng Café (Nhóm 9)
+   Theme: Xanh Tươi Sáng rgb(60, 131, 246) & Trắng Hiện Đại
    ========================================================= */
 
 :root {
-    /* Brand Primary Accent (Màu xanh theo yêu cầu) */
+    /* Brand Primary Accent (Màu xanh tươi sáng theo yêu cầu) */
     --cafe-primary: rgb(60, 131, 246);
     --cafe-primary-hover: #2563eb;
     --cafe-primary-active: #1d4ed8;
     --cafe-primary-light: #eff6ff;
     --cafe-primary-subtle: #dbeafe;
     
-    /* Sidebar Deep Navy Blue Gradient (Theo ảnh thiết kế) */
-    --sidebar-top: #1d3e8e;
-    --sidebar-mid: #1a3581;
-    --sidebar-bot: #0f265e;
+    /* Sidebar Bright Modern Blue (Xanh tươi sáng, không bị tối đậm) */
+    --sidebar-top: rgb(60, 131, 246);
+    --sidebar-mid: #2563eb;
+    --sidebar-bot: #1d4ed8;
     
     /* Neutral & Background Colors */
     --cafe-white: #ffffff;
-    --cafe-bg: #f6f9fc;
+    --cafe-bg: #f4f8fd;
     --cafe-card-bg: #ffffff;
     --cafe-border: #e2e8f0;
     --cafe-border-subtle: #edf2f7;
@@ -38,9 +38,9 @@
     
     /* Shadows */
     --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.05);
-    --shadow-md: 0 4px 16px rgba(15, 23, 42, 0.06);
-    --shadow-lg: 0 10px 25px rgba(26, 53, 129, 0.08);
-    --shadow-primary: 0 4px 14px rgba(60, 131, 246, 0.3);
+    --shadow-md: 0 4px 16px rgba(60, 131, 246, 0.08);
+    --shadow-lg: 0 10px 25px rgba(37, 99, 235, 0.12);
+    --shadow-primary: 0 4px 14px rgba(60, 131, 246, 0.35);
 }
 
 /* ==================== GLOBAL BASE ==================== */
@@ -74,10 +74,10 @@ a {
     min-height: 100vh;
 }
 
-/* ==================== SIDEBAR (THEO ẢNH CHỤP) ==================== */
+/* ==================== SIDEBAR MOON CAFÉ (XANH TƯƠI SÁNG) ==================== */
 .app-sidebar {
     width: var(--sidebar-width);
-    background: linear-gradient(180deg, var(--sidebar-top) 0%, var(--sidebar-mid) 48%, var(--sidebar-bot) 100%);
+    background: linear-gradient(180deg, var(--sidebar-top) 0%, var(--sidebar-mid) 52%, var(--sidebar-bot) 100%);
     color: var(--cafe-white);
     flex-shrink: 0;
     display: flex;
@@ -87,13 +87,13 @@ a {
     bottom: 0;
     left: 0;
     z-index: 1030;
-    box-shadow: 4px 0 24px rgba(15, 38, 94, 0.2);
+    box-shadow: 4px 0 20px rgba(37, 99, 235, 0.22);
 }
 
 /* Sidebar Brand */
 .sidebar-brand {
     padding: 1.35rem 1.25rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     display: flex;
     align-items: center;
     gap: 0.85rem;
@@ -106,35 +106,42 @@ a {
 }
 
 .brand-icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    background: var(--cafe-white);
-    color: var(--sidebar-mid);
+    width: 46px;
+    height: 46px;
+    border-radius: 14px;
+    background: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.45rem;
-    font-weight: 700;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+    padding: 2px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     flex-shrink: 0;
+}
+
+.brand-icon img,
+.brand-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
 }
 
 .brand-text h5 {
     margin: 0;
-    font-size: 1.12rem;
+    font-size: 1.18rem;
     font-weight: 800;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.5px;
     color: #ffffff;
     line-height: 1.2;
 }
 
 .brand-text span {
     font-size: 0.72rem;
-    color: #bfdbfe;
-    opacity: 0.9;
+    color: #dbeafe;
+    opacity: 0.95;
     display: block;
     margin-top: 2px;
+    font-weight: 500;
 }
 
 /* Sidebar Menu */
@@ -149,7 +156,7 @@ a {
 }
 
 .sidebar-menu::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.3);
     border-radius: 4px;
 }
 
@@ -157,7 +164,7 @@ a {
     font-size: 0.68rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: #93c5fd;
+    color: rgba(255, 255, 255, 0.78);
     padding: 1rem 0.85rem 0.35rem;
     font-weight: 700;
 }
@@ -172,10 +179,10 @@ a {
     align-items: center;
     gap: 0.85rem;
     padding: 0.7rem 0.95rem;
-    color: rgba(255, 255, 255, 0.88);
+    color: rgba(255, 255, 255, 0.92);
     text-decoration: none;
-    border-radius: 10px;
-    margin-bottom: 0.2rem;
+    border-radius: 12px;
+    margin-bottom: 0.25rem;
     font-weight: 500;
     font-size: 0.91rem;
     transition: all 0.18s ease-in-out;
@@ -185,12 +192,12 @@ a {
     font-size: 1.2rem;
     width: 24px;
     text-align: center;
-    color: rgba(255, 255, 255, 0.85);
+    color: rgba(255, 255, 255, 0.9);
     transition: transform 0.18s ease;
 }
 
 .sidebar-link:hover {
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.18);
     color: #ffffff;
 }
 
@@ -199,24 +206,24 @@ a {
     transform: scale(1.08);
 }
 
-/* Sidebar Link: ACTIVE (Đúng theo ảnh người dùng gửi: thẻ trắng chữ xanh đậm) */
+/* Sidebar Link: ACTIVE (Thẻ trắng chữ xanh tươi sáng theo theme) */
 .sidebar-link.active {
     background: #ffffff !important;
-    color: var(--sidebar-mid) !important;
+    color: var(--sidebar-bot) !important;
     font-weight: 700 !important;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16) !important;
-    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14) !important;
+    border-radius: 12px;
 }
 
 .sidebar-link.active i {
-    color: var(--sidebar-mid) !important;
+    color: var(--sidebar-bot) !important;
 }
 
-/* Sidebar Footer (Theo ảnh người dùng gửi) */
+/* Sidebar Footer */
 .sidebar-footer {
     padding: 1.1rem 1.25rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(15, 38, 94, 0.35);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.1);
 }
 
 .sidebar-footer .small .fw-semibold {
@@ -226,12 +233,12 @@ a {
 
 .sidebar-footer .badge {
     background: #ffffff !important;
-    color: var(--sidebar-mid) !important;
+    color: var(--sidebar-bot) !important;
     font-weight: 800;
     font-size: 0.76rem;
     padding: 0.3rem 0.65rem;
     border-radius: 6px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* ==================== MAIN CONTENT AREA ==================== */
@@ -266,7 +273,7 @@ a {
 
 .app-topbar .form-control:focus {
     border-color: var(--cafe-primary);
-    box-shadow: 0 0 0 3px rgba(60, 131, 246, 0.15);
+    box-shadow: 0 0 0 3px rgba(60, 131, 246, 0.18);
 }
 
 .app-content {
@@ -284,7 +291,7 @@ a {
 }
 
 .card-custom:hover {
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 8px 24px rgba(60, 131, 246, 0.08);
 }
 
 .card-custom .card-header-custom {
@@ -329,7 +336,7 @@ a {
 }
 
 .stat-card-primary {
-    background: linear-gradient(135deg, var(--cafe-primary) 0%, var(--sidebar-mid) 100%);
+    background: linear-gradient(135deg, var(--cafe-primary) 0%, var(--sidebar-bot) 100%);
     color: var(--cafe-white);
     border: none;
     box-shadow: var(--shadow-primary);
@@ -571,7 +578,7 @@ a {
 .chart-bar-fill {
     width: 100%;
     max-width: 44px;
-    background: linear-gradient(180deg, var(--cafe-primary) 0%, var(--sidebar-mid) 100%);
+    background: linear-gradient(180deg, var(--cafe-primary) 0%, var(--sidebar-bot) 100%);
     border-radius: 8px 8px 0 0;
     transition: opacity 0.2s;
     position: relative;
@@ -583,7 +590,7 @@ a {
 
 /* ==================== NAV PILLS ==================== */
 .nav-pills-blue .nav-link {
-    color: var(--sidebar-mid);
+    color: var(--sidebar-bot);
     background: #f1f5f9;
     border: 1px solid #e2e8f0;
     margin-right: 0.5rem;
@@ -610,11 +617,11 @@ a {
     border-radius: 18px;
     overflow: hidden;
     border: 1px solid var(--cafe-border);
-    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.2);
+    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.15);
 }
 
 .modal-header.bg-primary {
-    background: linear-gradient(135deg, var(--sidebar-mid) 0%, var(--cafe-primary) 100%) !important;
+    background: linear-gradient(135deg, var(--sidebar-bot) 0%, var(--cafe-primary) 100%) !important;
     padding: 1.25rem 1.5rem;
 }
 
