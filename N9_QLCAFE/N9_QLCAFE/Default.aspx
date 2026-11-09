@@ -41,8 +41,8 @@
             <div class="stat-card stat-card-primary">
                 <div>
                     <div class="small opacity-75 fw-medium">Doanh thu hôm nay (F51)</div>
-                    <h3 class="fw-bold my-1">4.850.000 đ</h3>
-                    <div class="small opacity-75"><i class="bi bi-arrow-up-right"></i> +14.5% so với hôm qua</div>
+                    <h3 class="fw-bold my-1">0 đ</h3>
+                    <div class="small opacity-75">Chưa có phát sinh</div>
                 </div>
                 <div class="stat-icon">
                     <i class="bi bi-cash-coin"></i>
@@ -52,9 +52,9 @@
         <div class="col-12 col-sm-6 col-xl-3">
             <div class="stat-card">
                 <div>
-                    <div class="text-muted small fw-medium">Doanh thu tháng 11 (F52)</div>
-                    <h3 class="fw-bold my-1 text-primary">68.420.000 đ</h3>
-                    <div class="small text-success fw-medium"><i class="bi bi-check-circle-fill"></i> Đạt 82% kế hoạch tháng</div>
+                    <div class="text-muted small fw-medium">Doanh thu tháng này (F52)</div>
+                    <h3 class="fw-bold my-1 text-primary">0 đ</h3>
+                    <div class="small text-muted">Chưa có phát sinh</div>
                 </div>
                 <div class="stat-icon">
                     <i class="bi bi-calendar2-check"></i>
@@ -65,8 +65,8 @@
             <div class="stat-card">
                 <div>
                     <div class="text-muted small fw-medium">Đơn đã thanh toán (F54)</div>
-                    <h3 class="fw-bold my-1 text-dark">94 hóa đơn</h3>
-                    <div class="small text-muted">Không tính 3 đơn đã hủy</div>
+                    <h3 class="fw-bold my-1 text-dark">0 hóa đơn</h3>
+                    <div class="small text-muted">Chưa có phát sinh</div>
                 </div>
                 <div class="stat-icon">
                     <i class="bi bi-receipt-cutoff"></i>
@@ -77,8 +77,8 @@
             <div class="stat-card">
                 <div>
                     <div class="text-muted small fw-medium">Số lượng ly đã bán</div>
-                    <h3 class="fw-bold my-1 text-dark">236 ly</h3>
-                    <div class="small text-primary fw-medium">TB: 2.5 đồ uống / đơn</div>
+                    <h3 class="fw-bold my-1 text-dark">0 ly</h3>
+                    <div class="small text-muted">Chưa có phát sinh</div>
                 </div>
                 <div class="stat-icon">
                     <i class="bi bi-cup-hot"></i>
@@ -102,38 +102,38 @@
                 <div class="p-4">
                     <div class="chart-bars">
                         <div class="chart-bar-col">
-                            <span class="small text-muted mb-1" style="font-size:0.72rem;">3.6tr</span>
-                            <div class="chart-bar-fill" style="height: 60%;"></div>
+                            <span class="small text-muted mb-1" style="font-size:0.72rem;">0đ</span>
+                            <div class="chart-bar-fill" style="height: 4px;"></div>
                             <span class="small fw-semibold mt-2">T2</span>
                         </div>
                         <div class="chart-bar-col">
-                            <span class="small text-muted mb-1" style="font-size:0.72rem;">4.1tr</span>
-                            <div class="chart-bar-fill" style="height: 68%;"></div>
+                            <span class="small text-muted mb-1" style="font-size:0.72rem;">0đ</span>
+                            <div class="chart-bar-fill" style="height: 4px;"></div>
                             <span class="small fw-semibold mt-2">T3</span>
                         </div>
                         <div class="chart-bar-col">
-                            <span class="small text-muted mb-1" style="font-size:0.72rem;">3.9tr</span>
-                            <div class="chart-bar-fill" style="height: 64%;"></div>
+                            <span class="small text-muted mb-1" style="font-size:0.72rem;">0đ</span>
+                            <div class="chart-bar-fill" style="height: 4px;"></div>
                             <span class="small fw-semibold mt-2">T4</span>
                         </div>
                         <div class="chart-bar-col">
-                            <span class="small text-muted mb-1" style="font-size:0.72rem;">4.5tr</span>
-                            <div class="chart-bar-fill" style="height: 75%;"></div>
+                            <span class="small text-muted mb-1" style="font-size:0.72rem;">0đ</span>
+                            <div class="chart-bar-fill" style="height: 4px;"></div>
                             <span class="small fw-semibold mt-2">T5</span>
                         </div>
                         <div class="chart-bar-col">
-                            <span class="small text-muted mb-1" style="font-size:0.72rem;">5.2tr</span>
-                            <div class="chart-bar-fill" style="height: 86%;"></div>
+                            <span class="small text-muted mb-1" style="font-size:0.72rem;">0đ</span>
+                            <div class="chart-bar-fill" style="height: 4px;"></div>
                             <span class="small fw-semibold mt-2">T6</span>
                         </div>
                         <div class="chart-bar-col">
-                            <span class="small text-muted mb-1" style="font-size:0.72rem;">5.8tr</span>
-                            <div class="chart-bar-fill" style="height: 96%;"></div>
+                            <span class="small text-muted mb-1" style="font-size:0.72rem;">0đ</span>
+                            <div class="chart-bar-fill" style="height: 4px;"></div>
                             <span class="small fw-semibold mt-2">T7</span>
                         </div>
                         <div class="chart-bar-col">
-                            <span class="small text-primary fw-bold mb-1" style="font-size:0.72rem;">4.85tr</span>
-                            <div class="chart-bar-fill" style="height: 80%; background: linear-gradient(180deg, #1d4ed8 0%, #0f296b 100%);"></div>
+                            <span class="small text-muted mb-1" style="font-size:0.72rem;">0đ</span>
+                            <div class="chart-bar-fill" style="height: 4px;"></div>
                             <span class="small fw-bold text-primary mt-2">CN (Nay)</span>
                         </div>
                     </div>
@@ -144,7 +144,7 @@
                             <div class="p-3 rounded-3 border bg-light d-flex justify-content-between align-items-center">
                                 <div>
                                     <div class="text-muted small">Thanh toán Tiền mặt (F39)</div>
-                                    <div class="fw-bold text-dark fs-6">2.150.000 đ <span class="badge badge-soft-blue ms-1">44%</span></div>
+                                    <div class="fw-bold text-dark fs-6">0 đ <span class="badge badge-soft-blue ms-1">0%</span></div>
                                 </div>
                                 <i class="bi bi-cash-stack fs-3 text-primary"></i>
                             </div>
@@ -153,7 +153,7 @@
                             <div class="p-3 rounded-3 border bg-light d-flex justify-content-between align-items-center">
                                 <div>
                                     <div class="text-muted small">Chuyển khoản QR (F40)</div>
-                                    <div class="fw-bold text-primary fs-6">2.700.000 đ <span class="badge badge-soft-blue ms-1">56%</span></div>
+                                    <div class="fw-bold text-primary fs-6">0 đ <span class="badge badge-soft-blue ms-1">0%</span></div>
                                 </div>
                                 <i class="bi bi-qr-code-scan fs-3 text-primary"></i>
                             </div>
@@ -185,49 +185,11 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><span class="badge bg-primary">#1</span></td>
-                                <td>
-                                    <div class="fw-semibold">Cà phê Sữa Đá Sài Gòn</div>
-                                    <small class="text-muted">Mã: DU001 • Cà phê truyền thống</small>
+                                <td colspan="4" class="text-center text-muted py-5">
+                                    <i class="bi bi-inbox fs-2 d-block text-secondary mb-1 opacity-50"></i>
+                                    <div class="fw-semibold">Chưa có dữ liệu đồ uống bán chạy</div>
+                                    <small class="text-muted">Dữ liệu sẽ tự động tổng hợp khi phát sinh hóa đơn</small>
                                 </td>
-                                <td class="text-center fw-bold text-primary">64 ly</td>
-                                <td class="text-end fw-semibold">1.856.000 đ</td>
-                            </tr>
-                            <tr>
-                                <td><span class="badge badge-soft-blue">#2</span></td>
-                                <td>
-                                    <div class="fw-semibold">Bạc Xỉu Kem Muối</div>
-                                    <small class="text-muted">Mã: DU002 • Cà phê truyền thống</small>
-                                </td>
-                                <td class="text-center fw-bold text-primary">52 ly</td>
-                                <td class="text-end fw-semibold">1.820.000 đ</td>
-                            </tr>
-                            <tr>
-                                <td><span class="badge badge-soft-blue">#3</span></td>
-                                <td>
-                                    <div class="fw-semibold">Trà Đào Cam Sả</div>
-                                    <small class="text-muted">Mã: DU005 • Trà trái cây</small>
-                                </td>
-                                <td class="text-center fw-bold text-primary">45 ly</td>
-                                <td class="text-end fw-semibold">1.755.000 đ</td>
-                            </tr>
-                            <tr>
-                                <td><span class="badge bg-light text-dark border">#4</span></td>
-                                <td>
-                                    <div class="fw-semibold">Matcha Latte Đá Xay</div>
-                                    <small class="text-muted">Mã: DU008 • Đá xay / Freeze</small>
-                                </td>
-                                <td class="text-center fw-semibold">38 ly</td>
-                                <td class="text-end fw-semibold">1.710.000 đ</td>
-                            </tr>
-                            <tr>
-                                <td><span class="badge bg-light text-dark border">#5</span></td>
-                                <td>
-                                    <div class="fw-semibold">Trà Sen Vàng Macchiato</div>
-                                    <small class="text-muted">Mã: DU006 • Trà trái cây</small>
-                                </td>
-                                <td class="text-center fw-semibold">37 ly</td>
-                                <td class="text-end fw-semibold">1.554.000 đ</td>
                             </tr>
                         </tbody>
                     </table>

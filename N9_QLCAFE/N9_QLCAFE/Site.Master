@@ -1,10 +1,14 @@
-<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.Master.cs" Inherits="N9_QLCAFE.SiteMaster" %>
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.Master.cs" Inherits="N9_QLCAFE.SiteMaster" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head runat="server">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%: Page.Title %> - N9 Café Management</title>
+    <!-- Google Fonts for Vietnamese Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
     <link href="~/Content/site.css" rel="stylesheet" />
@@ -164,7 +168,7 @@
                     <div class="modal-body p-4">
                         <div class="mb-3">
                             <label class="form-label small fw-semibold">Tên đăng nhập</label>
-                            <input type="text" class="form-control bg-light" value="admin_nhom9" readonly />
+                            <input type="text" class="form-control bg-light" placeholder="Nhập tên đăng nhập..." />
                         </div>
                         <div class="mb-3">
                             <label class="form-label small fw-semibold">Mật khẩu hiện tại <span class="text-danger">*</span></label>

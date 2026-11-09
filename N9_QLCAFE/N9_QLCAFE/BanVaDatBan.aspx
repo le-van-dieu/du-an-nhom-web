@@ -1,4 +1,4 @@
-<%@ Page Title="Quản lý Bàn & Đặt bàn" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="BanVaDatBan.aspx.cs" Inherits="N9_QLCAFE.BanVaDatBan" %>
+﻿<%@ Page Title="Quản lý Bàn & Đặt bàn" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="BanVaDatBan.aspx.cs" Inherits="N9_QLCAFE.BanVaDatBan" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 </asp:Content>
@@ -32,8 +32,8 @@
             <div class="stat-card">
                 <div>
                     <div class="text-muted small fw-medium">Tổng số bàn hệ thống</div>
-                    <h3 class="fw-bold my-1 text-dark">16 bàn</h3>
-                    <div class="small text-primary">3 Khu vực phục vụ (F17)</div>
+                    <h3 class="fw-bold my-1 text-dark">0 bàn</h3>
+                    <div class="small text-muted">0 Khu vực phục vụ</div>
                 </div>
                 <div class="stat-icon">
                     <i class="bi bi-grid-3x3-gap"></i>
@@ -44,8 +44,8 @@
             <div class="stat-card">
                 <div>
                     <div class="text-muted small fw-medium">Bàn đang trống</div>
-                    <h3 class="fw-bold my-1 text-success">9 bàn</h3>
-                    <div class="small text-muted">Sẵn sàng đón khách</div>
+                    <h3 class="fw-bold my-1 text-success">0 bàn</h3>
+                    <div class="small text-muted">Chưa có bàn</div>
                 </div>
                 <div class="stat-icon">
                     <i class="bi bi-check2-circle"></i>
@@ -56,8 +56,8 @@
             <div class="stat-card stat-card-primary">
                 <div>
                     <div class="small opacity-75 fw-medium">Bàn đang sử dụng</div>
-                    <h3 class="fw-bold my-1">4 bàn</h3>
-                    <div class="small opacity-75">Đang có đơn phục vụ</div>
+                    <h3 class="fw-bold my-1">0 bàn</h3>
+                    <div class="small opacity-75">Chưa có đơn phục vụ</div>
                 </div>
                 <div class="stat-icon">
                     <i class="bi bi-people-fill"></i>
@@ -68,8 +68,8 @@
             <div class="stat-card">
                 <div>
                     <div class="text-muted small fw-medium">Bàn đã đặt trước (F26)</div>
-                    <h3 class="fw-bold my-1 text-primary">3 bàn</h3>
-                    <div class="small text-muted">Lịch hẹn trong hôm nay</div>
+                    <h3 class="fw-bold my-1 text-primary">0 bàn</h3>
+                    <div class="small text-muted">Chưa có lịch hẹn</div>
                 </div>
                 <div class="stat-icon">
                     <i class="bi bi-calendar-event"></i>
@@ -370,91 +370,10 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="fw-bold text-primary">DB012</td>
-                                <td>
-                                    <div class="fw-bold text-dark">Trần Minh Tâm</div>
-                                    <small class="text-muted"><i class="bi bi-telephone me-1"></i>0908.234.567</small>
-                                </td>
-                                <td>
-                                    <div class="fw-semibold">09/11/2026</div>
-                                    <small class="text-primary fw-bold">15:30</small>
-                                </td>
-                                <td class="text-center fw-bold">5 người</td>
-                                <td><span class="badge badge-soft-blue">B03 • Tầng 1</span></td>
-                                <td><small class="text-muted">Cần ổ cắm điện họp nhóm</small></td>
-                                <td><span class="badge badge-soft-success">Đã xác nhận (F24)</span></td>
-                                <td class="text-end">
-                                    <a href="GoiMonThanhToan.aspx" class="btn btn-sm btn-cafe-primary me-1" title="Khách đến nhận bàn chuyển sang đơn phục vụ">
-                                        <i class="bi bi-box-arrow-in-right"></i> Nhận bàn
-                                    </a>
-                                    <button type="button" class="btn btn-sm btn-cafe-outline me-1" data-bs-toggle="modal" data-bs-target="#modalTaoDatBan" title="Sửa đặt bàn (F22)">
-                                        <i class="bi bi-pencil"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-outline-danger" title="Hủy / Khách không đến No-show (F23)">
-                                        <i class="bi bi-x-lg"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold text-primary">DB014</td>
-                                <td>
-                                    <div class="fw-bold text-dark">Lê Hoàng Nam</div>
-                                    <small class="text-muted"><i class="bi bi-telephone me-1"></i>0912.888.999</small>
-                                </td>
-                                <td>
-                                    <div class="fw-semibold">09/11/2026</div>
-                                    <small class="text-primary fw-bold">18:00</small>
-                                </td>
-                                <td class="text-center fw-bold">7 người</td>
-                                <td><span class="badge badge-soft-blue">B06 • Tầng 2 VIP</span></td>
-                                <td><small class="text-muted">Sinh nhật nhỏ, chuẩn bị bánh ngọt</small></td>
-                                <td><span class="badge badge-soft-warning">Chờ xác nhận</span></td>
-                                <td class="text-end">
-                                    <button type="button" class="btn btn-sm btn-cafe-primary me-1" title="Xác nhận yêu cầu (F24)">
-                                        <i class="bi bi-check2"></i> Xác nhận (F24)
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-cafe-outline me-1" data-bs-toggle="modal" data-bs-target="#modalTaoDatBan">
-                                        <i class="bi bi-pencil"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-outline-danger">
-                                        <i class="bi bi-x-lg"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold text-muted">DB010</td>
-                                <td>
-                                    <div class="fw-bold text-dark">Phạm Thu Hà</div>
-                                    <small class="text-muted"><i class="bi bi-telephone me-1"></i>0987.654.321</small>
-                                </td>
-                                <td>
-                                    <div class="fw-semibold">09/11/2026</div>
-                                    <small class="text-muted">09:30</small>
-                                </td>
-                                <td class="text-center fw-bold">2 người</td>
-                                <td><span class="badge bg-light text-dark border">B02 • Tầng 1</span></td>
-                                <td><small class="text-muted">Ngồi cạnh cửa sổ</small></td>
-                                <td><span class="badge badge-soft-blue">Đã nhận bàn</span></td>
-                                <td class="text-end">
-                                    <span class="small text-muted">Đã chuyển đơn #DH1018</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold text-muted">DB009</td>
-                                <td>
-                                    <div class="fw-bold text-muted">Nguyễn Quốc Bảo</div>
-                                    <small class="text-muted"><i class="bi bi-telephone me-1"></i>0933.111.222</small>
-                                </td>
-                                <td>
-                                    <div class="fw-semibold text-muted">09/11/2026</div>
-                                    <small class="text-muted">08:00</small>
-                                </td>
-                                <td class="text-center text-muted">4 người</td>
-                                <td><span class="badge bg-light text-muted border">B05 • Tầng 2</span></td>
-                                <td><small class="text-muted">Quá giờ 30 phút không đến</small></td>
-                                <td><span class="badge badge-soft-danger">No-Show / Đã hủy (F23)</span></td>
-                                <td class="text-end">
-                                    <button type="button" class="btn btn-sm btn-cafe-outline" data-bs-toggle="modal" data-bs-target="#modalTaoDatBan">Đặt lại</button>
+                                <td colspan="8" class="text-center text-muted py-5">
+                                    <i class="bi bi-calendar2-x fs-1 d-block text-secondary mb-2 opacity-50"></i>
+                                    <div class="fw-semibold">Chưa có lịch đặt bàn nào</div>
+                                    <small class="text-muted">Nhấn "Thêm lịch đặt" để tạo đặt bàn cho khách</small>
                                 </td>
                             </tr>
                         </tbody>
@@ -476,7 +395,7 @@
                     <div class="row g-3">
                         <div class="col-md-5">
                             <label class="form-label small fw-semibold">Mã định danh bàn <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" value="B09" placeholder="VD: B09" />
+                            <input type="text" class="form-control" placeholder="VD: B01" placeholder="VD: B09" />
                         </div>
                         <div class="col-md-7">
                             <label class="form-label small fw-semibold">Tên hiển thị bàn <span class="text-danger">*</span></label>
@@ -492,7 +411,7 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label small fw-semibold">Sức chứa (Số ghế)</label>
-                            <input type="number" class="form-control" value="4" min="1" />
+                            <input type="number" class="form-control" value="2" min="1" />
                         </div>
                         <div class="col-12">
                             <label class="form-label small fw-semibold">Trạng thái bàn (F18)</label>
@@ -524,17 +443,13 @@
                     <div class="mb-3">
                         <label class="form-label small fw-semibold">Bàn hiện tại (Đang có khách)</label>
                         <select class="form-select">
-                            <option selected>B01 - Tầng 1 (Đơn #DH1024 - 138.000 đ)</option>
-                            <option>B04 - Tầng 1 (Đơn #DH1025 - 93.000 đ)</option>
-                            <option>B07 - Sân vườn (Đơn #DH1026 - 165.000 đ)</option>
+                            <option selected>-- Chọn bàn đang có khách cần chuyển --</option>
                         </select>
                     </div>
                     <div class="mb-3">
                         <label class="form-label small fw-semibold">Chuyển sang bàn trống <span class="text-danger">*</span></label>
                         <select class="form-select">
-                            <option selected>B02 - Tầng 1 (Trống - 2 ghế)</option>
-                            <option>B05 - Tầng 2 (Trống - 4 ghế)</option>
-                            <option>B08 - Sân vườn (Trống - 4 ghế)</option>
+                            <option selected>-- Chọn bàn trống muốn chuyển tới --</option>
                         </select>
                     </div>
                     <div class="mb-0">
@@ -574,30 +489,8 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="fw-bold text-primary">KV01</td>
-                                <td>Tầng 1 (Máy lạnh)</td>
-                                <td class="text-center">6</td>
-                                <td class="text-end">
-                                    <button type="button" class="btn btn-sm text-primary py-0"><i class="bi bi-pencil"></i></button>
-                                    <button type="button" class="btn btn-sm text-danger py-0"><i class="bi bi-trash"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold text-primary">KV02</td>
-                                <td>Tầng 2 (Ban công)</td>
-                                <td class="text-center">6</td>
-                                <td class="text-end">
-                                    <button type="button" class="btn btn-sm text-primary py-0"><i class="bi bi-pencil"></i></button>
-                                    <button type="button" class="btn btn-sm text-danger py-0"><i class="bi bi-trash"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold text-primary">KV03</td>
-                                <td>Sân vườn ngoài trời</td>
-                                <td class="text-center">4</td>
-                                <td class="text-end">
-                                    <button type="button" class="btn btn-sm text-primary py-0"><i class="bi bi-pencil"></i></button>
-                                    <button type="button" class="btn btn-sm text-danger py-0"><i class="bi bi-trash"></i></button>
+                                <td colspan="4" class="text-center text-muted py-3">
+                                    <small>Chưa có khu vực nào. Hãy nhập tên khu vực và nhấn Thêm.</small>
                                 </td>
                             </tr>
                         </tbody>
@@ -619,7 +512,7 @@
                     <div class="row g-3">
                         <div class="col-md-4">
                             <label class="form-label small fw-semibold">Mã đặt bàn</label>
-                            <input type="text" class="form-control bg-light" value="DB015" readonly />
+                            <input type="text" class="form-control bg-light" placeholder="Hệ thống tự cấp..." readonly />
                         </div>
                         <div class="col-md-4">
                             <label class="form-label small fw-semibold">Tên khách hàng <span class="text-danger">*</span></label>
@@ -635,11 +528,11 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label small fw-semibold">Giờ đến dự kiến <span class="text-danger">*</span></label>
-                            <input type="time" class="form-control" value="19:00" />
+                            <input type="time" class="form-control" value="" />
                         </div>
                         <div class="col-md-4">
                             <label class="form-label small fw-semibold">Số lượng khách (&gt; 0) <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" value="4" min="1" />
+                            <input type="number" class="form-control" value="2" min="1" />
                         </div>
                         <div class="col-md-6">
                             <label class="form-label small fw-semibold">Chọn bàn còn trống phù hợp <span class="text-danger">*</span></label>

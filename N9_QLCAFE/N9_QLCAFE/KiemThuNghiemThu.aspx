@@ -1,4 +1,4 @@
-<%@ Page Title="Kiểm thử, Nghiệm thu & Báo lỗi" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="KiemThuNghiemThu.aspx.cs" Inherits="N9_QLCAFE.KiemThuNghiemThu" %>
+﻿<%@ Page Title="Kiểm thử, Nghiệm thu & Báo lỗi" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="KiemThuNghiemThu.aspx.cs" Inherits="N9_QLCAFE.KiemThuNghiemThu" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 </asp:Content>

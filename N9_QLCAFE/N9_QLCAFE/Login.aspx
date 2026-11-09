@@ -1,10 +1,14 @@
-<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Login.aspx.cs" Inherits="N9_QLCAFE.Login" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Login.aspx.cs" Inherits="N9_QLCAFE.Login" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head runat="server">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Đăng nhập hệ thống (F01) - N9 QLCAFÉ</title>
+    <!-- Google Fonts for Vietnamese Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
     <link href="~/Content/site.css" rel="stylesheet" />
@@ -97,7 +101,7 @@
                             <label class="form-label small fw-semibold">Tên đăng nhập <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light text-primary"><i class="bi bi-person-fill"></i></span>
-                                <input type="text" class="form-control" value="admin_nhom9" placeholder="Nhập tên đăng nhập..." />
+                                <input type="text" class="form-control"  placeholder="Nhập tên đăng nhập..." />
                             </div>
                         </div>
 
@@ -108,7 +112,7 @@
                             </div>
                             <div class="input-group">
                                 <span class="input-group-text bg-light text-primary"><i class="bi bi-key-fill"></i></span>
-                                <input type="password" class="form-control" value="12345678" placeholder="Nhập mật khẩu..." />
+                                <input type="password" class="form-control"  placeholder="Nhập mật khẩu..." />
                             </div>
                         </div>
 

@@ -1,4 +1,4 @@
-<%@ Page Title="Quản lý Đồ uống & Menu" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="DoUong.aspx.cs" Inherits="N9_QLCAFE.DoUong" %>
+﻿<%@ Page Title="Quản lý Đồ uống & Menu" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="DoUong.aspx.cs" Inherits="N9_QLCAFE.DoUong" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 </asp:Content>
@@ -73,7 +73,7 @@
                         <h6 class="fw-bold mb-0">Danh sách Đồ uống trong hệ thống</h6>
                         <small class="text-muted">Quy tắc: Mã đồ uống không trùng • Giá bán &gt; 0 • Đồ uống đã có giao dịch chỉ chuyển sang Ngừng kinh doanh</small>
                     </div>
-                    <span class="badge badge-soft-blue">Tổng: 6 sản phẩm mẫu</span>
+                    <span class="badge badge-soft-blue">Tổng: 0 sản phẩm</span>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-cafe">
@@ -90,138 +90,10 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="fw-bold text-primary">DU001</td>
-                                <td>
-                                    <div class="rounded-3 bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center" style="width: 46px; height: 46px;">
-                                        <i class="bi bi-cup-hot-fill fs-5"></i>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="fw-bold text-dark">Cà phê Sữa Đá Sài Gòn</div>
-                                    <small class="text-muted">Hạt Robusta nguyên chất pha phin truyền thống kết hợp sữa đặc</small>
-                                </td>
-                                <td><span class="badge badge-soft-blue">Cà phê truyền thống</span></td>
-                                <td class="fw-bold text-primary">29.000 đ</td>
-                                <td><span class="badge badge-soft-success"><i class="bi bi-check-circle me-1"></i>Còn hàng</span></td>
-                                <td class="text-end">
-                                    <button type="button" class="btn btn-sm btn-cafe-outline me-1" data-bs-toggle="modal" data-bs-target="#modalThemDoUong" title="Sửa thông tin & giá (F07, F11)">
-                                        <i class="bi bi-pencil-square"></i> Sửa
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-outline-danger" title="Ngừng kinh doanh (F08)">
-                                        <i class="bi bi-slash-circle"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold text-primary">DU002</td>
-                                <td>
-                                    <div class="rounded-3 bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center" style="width: 46px; height: 46px;">
-                                        <i class="bi bi-cup-straw fs-5"></i>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="fw-bold text-dark">Bạc Xỉu Kem Muối</div>
-                                    <small class="text-muted">Sữa tươi béo ngậy hòa quyện espresso nhẹ và lớp kem muối biển</small>
-                                </td>
-                                <td><span class="badge badge-soft-blue">Cà phê truyền thống</span></td>
-                                <td class="fw-bold text-primary">35.000 đ</td>
-                                <td><span class="badge badge-soft-success"><i class="bi bi-check-circle me-1"></i>Còn hàng</span></td>
-                                <td class="text-end">
-                                    <button type="button" class="btn btn-sm btn-cafe-outline me-1" data-bs-toggle="modal" data-bs-target="#modalThemDoUong">
-                                        <i class="bi bi-pencil-square"></i> Sửa
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-outline-danger">
-                                        <i class="bi bi-slash-circle"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold text-primary">DU003</td>
-                                <td>
-                                    <div class="rounded-3 bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center" style="width: 46px; height: 46px;">
-                                        <i class="bi bi-cup-fill fs-5"></i>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="fw-bold text-dark">Caramel Macchiato</div>
-                                    <small class="text-muted">Espresso Arabica chiết xuất chuẩn Ý cùng sốt Caramel thơm dịu</small>
-                                </td>
-                                <td><span class="badge badge-soft-blue">Cà phê pha máy</span></td>
-                                <td class="fw-bold text-primary">45.000 đ</td>
-                                <td><span class="badge badge-soft-success"><i class="bi bi-check-circle me-1"></i>Còn hàng</span></td>
-                                <td class="text-end">
-                                    <button type="button" class="btn btn-sm btn-cafe-outline me-1" data-bs-toggle="modal" data-bs-target="#modalThemDoUong">
-                                        <i class="bi bi-pencil-square"></i> Sửa
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-outline-danger">
-                                        <i class="bi bi-slash-circle"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold text-primary">DU005</td>
-                                <td>
-                                    <div class="rounded-3 bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center" style="width: 46px; height: 46px;">
-                                        <i class="bi bi-cup-straw fs-5"></i>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="fw-bold text-dark">Trà Đào Cam Sả</div>
-                                    <small class="text-muted">Trà đen ủ lạnh, đào miếng giòn ngọt, cam vàng và hương sả tươi</small>
-                                </td>
-                                <td><span class="badge badge-soft-blue">Trà trái cây</span></td>
-                                <td class="fw-bold text-primary">39.000 đ</td>
-                                <td><span class="badge badge-soft-success"><i class="bi bi-check-circle me-1"></i>Còn hàng</span></td>
-                                <td class="text-end">
-                                    <button type="button" class="btn btn-sm btn-cafe-outline me-1" data-bs-toggle="modal" data-bs-target="#modalThemDoUong">
-                                        <i class="bi bi-pencil-square"></i> Sửa
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-outline-danger">
-                                        <i class="bi bi-slash-circle"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold text-primary">DU007</td>
-                                <td>
-                                    <div class="rounded-3 bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center" style="width: 46px; height: 46px;">
-                                        <i class="bi bi-snow2 fs-5"></i>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="fw-bold text-dark">Cookies & Cream Đá Xay</div>
-                                    <small class="text-muted">Bánh Oreo xay nhuyễn cùng sữa tươi và kem tươi whipping</small>
-                                </td>
-                                <td><span class="badge badge-soft-blue">Đá xay / Freeze</span></td>
-                                <td class="fw-bold text-primary">49.000 đ</td>
-                                <td><span class="badge badge-soft-warning"><i class="bi bi-exclamation-triangle me-1"></i>Hết hàng</span></td>
-                                <td class="text-end">
-                                    <button type="button" class="btn btn-sm btn-cafe-outline me-1" data-bs-toggle="modal" data-bs-target="#modalThemDoUong">
-                                        <i class="bi bi-pencil-square"></i> Sửa
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-outline-danger">
-                                        <i class="bi bi-slash-circle"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold text-muted">DU009</td>
-                                <td>
-                                    <div class="rounded-3 bg-secondary bg-opacity-10 text-secondary d-flex align-items-center justify-content-center" style="width: 46px; height: 46px;">
-                                        <i class="bi bi-cup fs-5"></i>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="fw-bold text-muted text-decoration-line-through">Cà phê Trứng Hà Nội (Theo mùa)</div>
-                                    <small class="text-muted">Đã phát sinh giao dịch cũ → Chuyển trạng thái Ngừng kinh doanh</small>
-                                </td>
-                                <td><span class="badge bg-light text-secondary border">Cà phê truyền thống</span></td>
-                                <td class="fw-semibold text-muted">42.000 đ</td>
-                                <td><span class="badge badge-soft-danger">Ngừng kinh doanh</span></td>
-                                <td class="text-end">
-                                    <button type="button" class="btn btn-sm btn-cafe-outline" data-bs-toggle="modal" data-bs-target="#modalThemDoUong">
-                                        <i class="bi bi-arrow-counterclockwise"></i> Mở bán lại
-                                    </button>
+                                <td colspan="7" class="text-center text-muted py-5">
+                                    <i class="bi bi-cup-straw fs-1 d-block text-secondary mb-2 opacity-50"></i>
+                                    <div class="fw-semibold">Chưa có đồ uống nào trong danh sách</div>
+                                    <small class="text-muted">Nhấn "Thêm đồ uống mới" để thêm món vào hệ thống</small>
                                 </td>
                             </tr>
                         </tbody>
@@ -232,75 +104,10 @@
 
         <!-- TAB 2: HIỂN THỊ MENU TRỰC QUAN CHO NHÂN VIÊN (F13) -->
         <div class="tab-pane fade" id="tabLuoiMenu" role="tabpanel">
-            <div class="row g-3">
-                <div class="col-12 col-sm-6 col-md-4 col-xl-3">
-                    <div class="drink-card">
-                        <div class="drink-thumb">
-                            <i class="bi bi-cup-hot-fill"></i>
-                            <span class="badge badge-soft-success position-absolute top-0 end-0 m-2">Còn hàng</span>
-                        </div>
-                        <div class="p-3">
-                            <div class="small text-primary fw-semibold">DU001 • Cà phê truyền thống</div>
-                            <h6 class="fw-bold my-1">Cà phê Sữa Đá Sài Gòn</h6>
-                            <p class="small text-muted mb-2">Hạt Robusta nguyên chất pha phin đậm đà</p>
-                            <div class="d-flex justify-content-between align-items-center pt-2 border-top">
-                                <span class="fw-bold text-primary fs-6">29.000 đ</span>
-                                <a href="GoiMonThanhToan.aspx" class="btn btn-sm btn-cafe-primary">Chọn món</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-sm-6 col-md-4 col-xl-3">
-                    <div class="drink-card">
-                        <div class="drink-thumb">
-                            <i class="bi bi-cup-straw"></i>
-                            <span class="badge badge-soft-success position-absolute top-0 end-0 m-2">Còn hàng</span>
-                        </div>
-                        <div class="p-3">
-                            <div class="small text-primary fw-semibold">DU002 • Cà phê truyền thống</div>
-                            <h6 class="fw-bold my-1">Bạc Xỉu Kem Muối</h6>
-                            <p class="small text-muted mb-2">Kem muối biển mặn nhẹ hòa quyện sữa tươi</p>
-                            <div class="d-flex justify-content-between align-items-center pt-2 border-top">
-                                <span class="fw-bold text-primary fs-6">35.000 đ</span>
-                                <a href="GoiMonThanhToan.aspx" class="btn btn-sm btn-cafe-primary">Chọn món</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-sm-6 col-md-4 col-xl-3">
-                    <div class="drink-card">
-                        <div class="drink-thumb">
-                            <i class="bi bi-cup-straw"></i>
-                            <span class="badge badge-soft-success position-absolute top-0 end-0 m-2">Còn hàng</span>
-                        </div>
-                        <div class="p-3">
-                            <div class="small text-primary fw-semibold">DU005 • Trà trái cây</div>
-                            <h6 class="fw-bold my-1">Trà Đào Cam Sả</h6>
-                            <p class="small text-muted mb-2">Trà đen ủ lạnh, đào miếng giòn ngọt</p>
-                            <div class="d-flex justify-content-between align-items-center pt-2 border-top">
-                                <span class="fw-bold text-primary fs-6">39.000 đ</span>
-                                <a href="GoiMonThanhToan.aspx" class="btn btn-sm btn-cafe-primary">Chọn món</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-sm-6 col-md-4 col-xl-3">
-                    <div class="drink-card opacity-75">
-                        <div class="drink-thumb">
-                            <i class="bi bi-snow2"></i>
-                            <span class="badge badge-soft-warning position-absolute top-0 end-0 m-2">Hết hàng</span>
-                        </div>
-                        <div class="p-3">
-                            <div class="small text-muted fw-semibold">DU007 • Đá xay / Freeze</div>
-                            <h6 class="fw-bold my-1">Cookies & Cream Đá Xay</h6>
-                            <p class="small text-muted mb-2">Không cho phép gọi món đã hết hàng</p>
-                            <div class="d-flex justify-content-between align-items-center pt-2 border-top">
-                                <span class="fw-bold text-muted fs-6">49.000 đ</span>
-                                <button type="button" class="btn btn-sm btn-secondary" disabled>Tạm hết</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="card-custom p-5 text-center text-muted">
+                <i class="bi bi-grid-3x3-gap fs-1 d-block text-secondary mb-2 opacity-50"></i>
+                <div class="fw-semibold">Chưa có đồ uống nào trên Menu</div>
+                <small class="text-muted">Các món đang ở trạng thái Còn hàng sẽ hiển thị trực quan tại đây</small>
             </div>
         </div>
     </div>
@@ -317,7 +124,7 @@
                     <div class="row g-3">
                         <div class="col-md-4">
                             <label class="form-label small fw-semibold">Mã đồ uống <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" placeholder="VD: DU010 (Không trùng)" value="DU010" />
+                            <input type="text" class="form-control" placeholder="VD: DU010 (Không trùng)" placeholder="VD: DU001 (Không trùng)" />
                         </div>
                         <div class="col-md-8">
                             <label class="form-label small fw-semibold">Tên đồ uống <span class="text-danger">*</span></label>
@@ -334,7 +141,7 @@
                         </div>
                         <div class="col-md-6">
                             <label class="form-label small fw-semibold">Giá bán (VNĐ - Lớn hơn 0) (F11) <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" placeholder="VD: 35000" value="35000" />
+                            <input type="number" class="form-control" placeholder="VD: 35000" placeholder="VD: 35000" />
                         </div>
                         <div class="col-md-6">
                             <label class="form-label small fw-semibold">Hình ảnh minh họa</label>
@@ -386,39 +193,8 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="fw-bold text-primary">DM01</td>
-                                <td>Cà phê truyền thống</td>
-                                <td class="text-center">8</td>
-                                <td class="text-end">
-                                    <button type="button" class="btn btn-sm text-primary py-0"><i class="bi bi-pencil"></i></button>
-                                    <button type="button" class="btn btn-sm text-danger py-0"><i class="bi bi-trash"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold text-primary">DM02</td>
-                                <td>Cà phê pha máy</td>
-                                <td class="text-center">6</td>
-                                <td class="text-end">
-                                    <button type="button" class="btn btn-sm text-primary py-0"><i class="bi bi-pencil"></i></button>
-                                    <button type="button" class="btn btn-sm text-danger py-0"><i class="bi bi-trash"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold text-primary">DM03</td>
-                                <td>Trà trái cây & Macchiato</td>
-                                <td class="text-center">10</td>
-                                <td class="text-end">
-                                    <button type="button" class="btn btn-sm text-primary py-0"><i class="bi bi-pencil"></i></button>
-                                    <button type="button" class="btn btn-sm text-danger py-0"><i class="bi bi-trash"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold text-primary">DM04</td>
-                                <td>Đá xay / Freeze</td>
-                                <td class="text-center">5</td>
-                                <td class="text-end">
-                                    <button type="button" class="btn btn-sm text-primary py-0"><i class="bi bi-pencil"></i></button>
-                                    <button type="button" class="btn btn-sm text-danger py-0"><i class="bi bi-trash"></i></button>
+                                <td colspan="4" class="text-center text-muted py-4">
+                                    <small>Chưa có danh mục nào. Hãy nhập tên danh mục và nhấn Thêm.</small>
                                 </td>
                             </tr>
                         </tbody>

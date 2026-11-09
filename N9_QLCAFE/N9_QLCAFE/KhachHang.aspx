@@ -26,8 +26,8 @@
             <div class="stat-card stat-card-primary">
                 <div>
                     <div class="small opacity-75 fw-medium">Tổng khách hàng lưu trữ</div>
-                    <h3 class="fw-bold my-1">348 khách</h3>
-                    <div class="small opacity-75">+18 khách mới tuần này</div>
+                    <h3 class="fw-bold my-1">0 khách</h3>
+                    <div class="small opacity-75">Chưa có dữ liệu</div>
                 </div>
                 <div class="stat-icon">
                     <i class="bi bi-people-fill"></i>
@@ -38,7 +38,7 @@
             <div class="stat-card">
                 <div>
                     <div class="text-muted small fw-medium">Khách hàng thân thiết (VIP)</div>
-                    <h3 class="fw-bold my-1 text-primary">56 khách</h3>
+                    <h3 class="fw-bold my-1 text-primary">0 khách</h3>
                     <div class="small text-muted">Ưu đãi giảm giá 10% (F38)</div>
                 </div>
                 <div class="stat-icon">
@@ -50,8 +50,8 @@
             <div class="stat-card">
                 <div>
                     <div class="text-muted small fw-medium">Khách đặt bàn hôm nay (F26)</div>
-                    <h3 class="fw-bold my-1 text-dark">12 lượt</h3>
-                    <div class="small text-success">Đã xác nhận 10 lượt</div>
+                    <h3 class="fw-bold my-1 text-dark">0 lượt</h3>
+                    <div class="small text-muted">Chưa có lượt đặt bàn</div>
                 </div>
                 <div class="stat-icon">
                     <i class="bi bi-calendar2-check"></i>
@@ -62,7 +62,7 @@
             <div class="stat-card">
                 <div>
                     <div class="text-muted small fw-medium">Tỷ lệ khách quay lại</div>
-                    <h3 class="fw-bold my-1 text-primary">68.5%</h3>
+                    <h3 class="fw-bold my-1 text-primary">0%</h3>
                     <div class="small text-muted">Theo lịch sử hóa đơn (F44)</div>
                 </div>
                 <div class="stat-icon">
@@ -104,7 +104,7 @@
                 <h6 class="fw-bold mb-0 text-dark">Danh sách Khách hàng đặt bàn & sử dụng dịch vụ</h6>
                 <small class="text-muted">Liên kết trực tiếp với lịch sử Đặt bàn (F21 - F26) và Chương trình Giảm giá thanh toán (F38)</small>
             </div>
-            <span class="badge badge-soft-blue">Hiển thị: 5 khách hàng tiêu biểu</span>
+            <span class="badge badge-soft-blue">Hiển thị: 0 khách hàng</span>
         </div>
         <div class="table-responsive">
             <table class="table table-cafe">
@@ -122,93 +122,10 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="fw-bold text-primary">KH001</td>
-                        <td>
-                            <div class="fw-bold text-dark">Trần Minh Tâm</div>
-                            <small class="text-muted">Khách hay đặt bàn họp nhóm tầng 1</small>
-                        </td>
-                        <td class="fw-semibold">0908.234.567</td>
-                        <td><span class="badge bg-primary"><i class="bi bi-star-fill me-1"></i>Khách VIP (-10%)</span></td>
-                        <td class="text-center fw-bold">18 lần</td>
-                        <td class="text-end fw-bold text-primary">3.450.000 đ</td>
-                        <td>09/11/2026 (#DB012)</td>
-                        <td class="text-end">
-                            <button type="button" class="btn btn-sm btn-cafe-outline me-1" data-bs-toggle="modal" data-bs-target="#modalThemKhachHang">
-                                <i class="bi bi-pencil-square"></i> Sửa
-                            </button>
-                            <a href="BanVaDatBan.aspx" class="btn btn-sm btn-cafe-primary">Đặt bàn</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="fw-bold text-primary">KH002</td>
-                        <td>
-                            <div class="fw-bold text-dark">Lê Hoàng Nam</div>
-                            <small class="text-muted">Thích khu vực Ban công tầng 2</small>
-                        </td>
-                        <td class="fw-semibold">0912.888.999</td>
-                        <td><span class="badge bg-primary"><i class="bi bi-star-fill me-1"></i>Khách VIP (-10%)</span></td>
-                        <td class="text-center fw-bold">14 lần</td>
-                        <td class="text-end fw-bold text-primary">2.890.000 đ</td>
-                        <td>09/11/2026 (#DB014)</td>
-                        <td class="text-end">
-                            <button type="button" class="btn btn-sm btn-cafe-outline me-1" data-bs-toggle="modal" data-bs-target="#modalThemKhachHang">
-                                <i class="bi bi-pencil-square"></i> Sửa
-                            </button>
-                            <a href="BanVaDatBan.aspx" class="btn btn-sm btn-cafe-primary">Đặt bàn</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="fw-bold text-primary">KH003</td>
-                        <td>
-                            <div class="fw-bold text-dark">Phạm Thu Hà</div>
-                            <small class="text-muted">Hay gọi Bạc Xỉu Kem Muối</small>
-                        </td>
-                        <td class="fw-semibold">0987.654.321</td>
-                        <td><span class="badge badge-soft-blue">Thân thiết (-5%)</span></td>
-                        <td class="text-center fw-bold">9 lần</td>
-                        <td class="text-end fw-bold text-primary">1.120.000 đ</td>
-                        <td>09/11/2026 (#DH1018)</td>
-                        <td class="text-end">
-                            <button type="button" class="btn btn-sm btn-cafe-outline me-1" data-bs-toggle="modal" data-bs-target="#modalThemKhachHang">
-                                <i class="bi bi-pencil-square"></i> Sửa
-                            </button>
-                            <a href="BanVaDatBan.aspx" class="btn btn-sm btn-cafe-primary">Đặt bàn</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="fw-bold text-primary">KH004</td>
-                        <td>
-                            <div class="fw-bold text-dark">Đặng Ngọc Lan</div>
-                            <small class="text-muted">Khách đặt mang đi buổi sáng</small>
-                        </td>
-                        <td class="fw-semibold">0976.123.456</td>
-                        <td><span class="badge badge-soft-blue">Thân thiết (-5%)</span></td>
-                        <td class="text-center fw-bold">7 lần</td>
-                        <td class="text-end fw-bold text-primary">680.000 đ</td>
-                        <td>08/11/2026 (#HD2039)</td>
-                        <td class="text-end">
-                            <button type="button" class="btn btn-sm btn-cafe-outline me-1" data-bs-toggle="modal" data-bs-target="#modalThemKhachHang">
-                                <i class="bi bi-pencil-square"></i> Sửa
-                            </button>
-                            <a href="BanVaDatBan.aspx" class="btn btn-sm btn-cafe-primary">Đặt bàn</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="fw-bold text-muted">KH005</td>
-                        <td>
-                            <div class="fw-bold text-dark">Nguyễn Quốc Bảo</div>
-                            <small class="text-muted">Ghi chú: 1 lần No-show (#DB009)</small>
-                        </td>
-                        <td class="fw-semibold">0933.111.222</td>
-                        <td><span class="badge bg-light text-dark border">Khách mới</span></td>
-                        <td class="text-center">1 lần</td>
-                        <td class="text-end fw-semibold">145.000 đ</td>
-                        <td>05/11/2026</td>
-                        <td class="text-end">
-                            <button type="button" class="btn btn-sm btn-cafe-outline me-1" data-bs-toggle="modal" data-bs-target="#modalThemKhachHang">
-                                <i class="bi bi-pencil-square"></i> Sửa
-                            </button>
-                            <a href="BanVaDatBan.aspx" class="btn btn-sm btn-cafe-primary">Đặt bàn</a>
+                        <td colspan="8" class="text-center text-muted py-5">
+                            <i class="bi bi-inbox fs-1 d-block text-secondary mb-2 opacity-50"></i>
+                            <div class="fw-semibold">Chưa có dữ liệu khách hàng</div>
+                            <small class="text-muted">Nhấn "Thêm Khách hàng mới" để tạo khách hàng mới</small>
                         </td>
                     </tr>
                 </tbody>
@@ -228,7 +145,7 @@
                     <div class="row g-3">
                         <div class="col-md-4">
                             <label class="form-label small fw-semibold">Mã KH</label>
-                            <input type="text" class="form-control bg-light" value="KH006" readonly />
+                            <input type="text" class="form-control bg-light" placeholder="Hệ thống tự cấp..." readonly />
                         </div>
                         <div class="col-md-8">
                             <label class="form-label small fw-semibold">Họ và tên khách hàng <span class="text-danger">*</span></label>

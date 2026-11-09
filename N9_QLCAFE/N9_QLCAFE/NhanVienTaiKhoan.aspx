@@ -1,4 +1,4 @@
-<%@ Page Title="Nhân viên & Tài khoản Phân quyền" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="NhanVienTaiKhoan.aspx.cs" Inherits="N9_QLCAFE.NhanVienTaiKhoan" %>
+﻿<%@ Page Title="Nhân viên & Tài khoản Phân quyền" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="NhanVienTaiKhoan.aspx.cs" Inherits="N9_QLCAFE.NhanVienTaiKhoan" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 </asp:Content>
@@ -63,7 +63,7 @@
                         <h6 class="fw-bold mb-0 text-dark">Danh sách Hồ sơ Nhân viên</h6>
                         <small class="text-muted">Quy tắc: Mã NV không trùng • SĐT hợp lệ • NV đã có giao dịch không xóa vật lý, chỉ chuyển sang Nghỉ việc</small>
                     </div>
-                    <span class="badge badge-soft-blue">Tổng: 5 nhân sự</span>
+                    <span class="badge badge-soft-blue">Tổng: 0 nhân sự</span>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-cafe">
@@ -82,120 +82,10 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="fw-bold text-primary">NV001</td>
-                                <td>
-                                    <div class="fw-bold text-dark">Nguyễn Nhật Anh</div>
-                                    <small class="text-muted">NS: 12/05/2003</small>
-                                </td>
-                                <td>Nam</td>
-                                <td>
-                                    <div class="small fw-semibold">0901.234.567</div>
-                                    <small class="text-muted">nhatanh@n9cafe.vn • Q.1, TP.HCM</small>
-                                </td>
-                                <td><span class="badge bg-primary">Admin / Quản lý</span></td>
-                                <td>01/01/2025</td>
-                                <td><span class="badge badge-soft-blue"><i class="bi bi-person-check me-1"></i>admin_nhom9</span></td>
-                                <td><span class="badge badge-soft-success">Đang làm việc</span></td>
-                                <td class="text-end">
-                                    <button type="button" class="btn btn-sm btn-cafe-outline me-1" data-bs-toggle="modal" data-bs-target="#modalThemNhanVien" title="Sửa thông tin (F46)">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-outline-danger" title="Chuyển trạng thái nghỉ việc (F47)">
-                                        <i class="bi bi-person-dash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold text-primary">NV002</td>
-                                <td>
-                                    <div class="fw-bold text-dark">Nguyễn Anh Kỳ</div>
-                                    <small class="text-muted">NS: 20/08/2003</small>
-                                </td>
-                                <td>Nam</td>
-                                <td>
-                                    <div class="small fw-semibold">0902.345.678</div>
-                                    <small class="text-muted">anhky@n9cafe.vn • Q.3, TP.HCM</small>
-                                </td>
-                                <td><span class="badge badge-soft-blue">Quản lý Menu & Pha chế</span></td>
-                                <td>15/02/2025</td>
-                                <td><span class="badge badge-soft-blue"><i class="bi bi-person-check me-1"></i>anhky_ql</span></td>
-                                <td><span class="badge badge-soft-success">Đang làm việc</span></td>
-                                <td class="text-end">
-                                    <button type="button" class="btn btn-sm btn-cafe-outline me-1" data-bs-toggle="modal" data-bs-target="#modalThemNhanVien">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-outline-danger">
-                                        <i class="bi bi-person-dash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold text-primary">NV003</td>
-                                <td>
-                                    <div class="fw-bold text-dark">Lư Quốc Thắng</div>
-                                    <small class="text-muted">NS: 10/11/2003</small>
-                                </td>
-                                <td>Nam</td>
-                                <td>
-                                    <div class="small fw-semibold">0903.456.789</div>
-                                    <small class="text-muted">quocthang@n9cafe.vn • Q.Bình Thạnh</small>
-                                </td>
-                                <td><span class="badge badge-soft-blue">Điều phối Bàn & Đặt bàn</span></td>
-                                <td>01/03/2025</td>
-                                <td><span class="badge badge-soft-blue"><i class="bi bi-person-check me-1"></i>thang_nv</span></td>
-                                <td><span class="badge badge-soft-success">Đang làm việc</span></td>
-                                <td class="text-end">
-                                    <button type="button" class="btn btn-sm btn-cafe-outline me-1" data-bs-toggle="modal" data-bs-target="#modalThemNhanVien">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-outline-danger">
-                                        <i class="bi bi-person-dash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold text-primary">NV004</td>
-                                <td>
-                                    <div class="fw-bold text-dark">Lê Văn Điều</div>
-                                    <small class="text-muted">NS: 04/04/2003</small>
-                                </td>
-                                <td>Nam</td>
-                                <td>
-                                    <div class="small fw-semibold">0904.567.890</div>
-                                    <small class="text-muted">vandieu@n9cafe.vn • Q.Tân Bình</small>
-                                </td>
-                                <td><span class="badge badge-soft-blue">Thu ngân & Phục vụ</span></td>
-                                <td>10/03/2025</td>
-                                <td><span class="badge badge-soft-blue"><i class="bi bi-person-check me-1"></i>vandieu_pos</span></td>
-                                <td><span class="badge badge-soft-success">Đang làm việc</span></td>
-                                <td class="text-end">
-                                    <button type="button" class="btn btn-sm btn-cafe-outline me-1" data-bs-toggle="modal" data-bs-target="#modalThemNhanVien">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-outline-danger">
-                                        <i class="bi bi-person-dash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold text-muted">NV005</td>
-                                <td>
-                                    <div class="fw-bold text-muted">Mẫn Vinh</div>
-                                    <small class="text-muted">NS: 19/09/2003</small>
-                                </td>
-                                <td>Nam</td>
-                                <td>
-                                    <div class="small fw-semibold text-muted">0905.678.901</div>
-                                    <small class="text-muted">manvinh@n9cafe.vn • Q.Phú Nhuận</small>
-                                </td>
-                                <td><span class="badge bg-light text-secondary border">Kiểm soát chất lượng (QC)</span></td>
-                                <td>15/01/2025</td>
-                                <td><span class="badge bg-light text-muted border">manvinh_qc (Đã khóa)</span></td>
-                                <td><span class="badge badge-soft-danger">Nghỉ việc (F47)</span></td>
-                                <td class="text-end">
-                                    <button type="button" class="btn btn-sm btn-cafe-outline" data-bs-toggle="modal" data-bs-target="#modalThemNhanVien">
-                                        Khôi phục
-                                    </button>
+                                <td colspan="9" class="text-center text-muted py-5">
+                                    <i class="bi bi-people fs-1 d-block text-secondary mb-2 opacity-50"></i>
+                                    <div class="fw-semibold">Chưa có hồ sơ nhân viên</div>
+                                    <small class="text-muted">Nhấn "Thêm Nhân viên mới" để tạo hồ sơ nhân viên</small>
                                 </td>
                             </tr>
                         </tbody>
@@ -231,45 +121,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td class="fw-bold text-primary">admin_nhom9</td>
-                                        <td>NV001 - Nguyễn Nhật Anh</td>
-                                        <td><span class="badge bg-primary">Admin</span></td>
-                                        <td><span class="badge badge-soft-success">Hoạt động</span></td>
-                                        <td class="text-end">
-                                            <button type="button" class="btn btn-sm btn-cafe-outline" data-bs-toggle="modal" data-bs-target="#modalTaiKhoan">Sửa quyền</button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="fw-bold text-primary">anhky_ql</td>
-                                        <td>NV002 - Nguyễn Anh Kỳ</td>
-                                        <td><span class="badge badge-soft-blue">Quản lý</span></td>
-                                        <td><span class="badge badge-soft-success">Hoạt động</span></td>
-                                        <td class="text-end">
-                                            <button type="button" class="btn btn-sm btn-cafe-outline me-1" data-bs-toggle="modal" data-bs-target="#modalTaiKhoan">Sửa</button>
-                                            <button type="button" class="btn btn-sm btn-outline-danger" title="Khóa tài khoản (F05)"><i class="bi bi-lock"></i></button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="fw-bold text-primary">vandieu_pos</td>
-                                        <td>NV004 - Lê Văn Điều</td>
-                                        <td><span class="badge bg-light text-dark border">Nhân viên</span></td>
-                                        <td><span class="badge badge-soft-success">Hoạt động</span></td>
-                                        <td class="text-end">
-                                            <button type="button" class="btn btn-sm btn-cafe-outline me-1" data-bs-toggle="modal" data-bs-target="#modalTaiKhoan">Sửa</button>
-                                            <button type="button" class="btn btn-sm btn-outline-danger" title="Khóa tài khoản (F05)"><i class="bi bi-lock"></i></button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="fw-bold text-muted">manvinh_qc</td>
-                                        <td>NV005 - Mẫn Vinh</td>
-                                        <td><span class="badge bg-light text-muted border">Nhân viên</span></td>
-                                        <td><span class="badge badge-soft-danger">Đã khóa (F05)</span></td>
-                                        <td class="text-end">
-                                            <button type="button" class="btn btn-sm btn-cafe-outline">Mở khóa</button>
-                                        </td>
-                                    </tr>
-                                </tbody>
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-5">
+                                    <i class="bi bi-shield-lock fs-1 d-block text-secondary mb-2 opacity-50"></i>
+                                    <div class="fw-semibold">Chưa có tài khoản nào</div>
+                                    <small class="text-muted">Nhấn "Cấp tài khoản mới" để tạo tài khoản đăng nhập</small>
+                                </td>
+                            </tr>
+                        </tbody>
                             </table>
                         </div>
                     </div>
@@ -352,7 +211,7 @@
                     <div class="row g-3">
                         <div class="col-md-4">
                             <label class="form-label small fw-semibold">Mã nhân viên <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" value="NV006" placeholder="Không trùng..." />
+                            <input type="text" class="form-control" placeholder="Hệ thống tự cấp..." placeholder="Không trùng..." />
                         </div>
                         <div class="col-md-5">
                             <label class="form-label small fw-semibold">Họ và tên <span class="text-danger">*</span></label>
