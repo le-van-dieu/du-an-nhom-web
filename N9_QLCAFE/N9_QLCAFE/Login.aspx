@@ -15,7 +15,7 @@
     <style>
         .login-wrapper {
             min-height: 100vh;
-            background: linear-gradient(135deg, #0f296b 0%, #1d4ed8 55%, #3b82f6 100%);
+            background: linear-gradient(135deg, #0f265e 0%, #1a3581 50%, rgb(60, 131, 246) 100%);
             display: flex;
             align-items: center;
             justify-content: center;
