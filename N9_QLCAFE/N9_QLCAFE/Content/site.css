@@ -8,14 +8,14 @@
     --cafe-blue-800: #1e3a8a;
     --cafe-blue-700: #1d4ed8;
     --cafe-blue-600: #2563eb;
-    --cafe-blue-500: #3b82f6;
+    --cafe-blue-500: rgb(60, 131, 246);
     --cafe-blue-100: #dbeafe;
-    --cafe-blue-50:  #eff6ff;
-    --cafe-white:    #ffffff;
-    --cafe-bg:       #f4f8ff;
-    --cafe-border:   #dce7f9;
-    --cafe-text:     #1e293b;
-    --cafe-muted:    #64748b;
+    --cafe-blue-50: #eff6ff;
+    --cafe-white: #ffffff;
+    --cafe-bg: #f4f8ff;
+    --cafe-border: #dce7f9;
+    --cafe-text: #1e293b;
+    --cafe-muted: #64748b;
     --sidebar-width: 265px;
 }
 
