@@ -1,297 +1,36 @@
-<%@ Page Title="Gọi món & Thanh toán Hóa đơn" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="GoiMonThanhToan.aspx.cs" Inherits="N9_QLCAFE.GoiMonThanhToan" %>
-
-<asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
+﻿<%@ Page Title="Gọi món & Thanh toán" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="GoiMonThanhToan.aspx.cs" Inherits="N9_QLCAFE.GoiMonThanhToan" %>
+<asp:Content ContentPlaceHolderID="HeadContent" runat="server"><style>
+.pos-menu{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}.pos-menu a{white-space:normal;padding:18px}.pos-note{max-width:180px}
+@media print{body *{visibility:hidden}#posReceipt,#posReceipt *{visibility:visible}#posReceipt{position:absolute;left:0;top:0;width:100%}.no-print{display:none}}
+</style></asp:Content>
+<asp:Content ContentPlaceHolderID="MainContent" runat="server">
+<div class="mb-4"><span class="badge badge-soft-blue">F27–F44 • Lê Văn Điều</span><h4>Gọi món, đơn hàng & thanh toán</h4></div>
+<asp:Label ID="Message" runat="server" CssClass="d-block mb-3" role="alert" />
+<div class="row g-4"><div class="col-lg-6"><div class="card-custom p-3">
+<h5>Thực đơn</h5><div class="d-flex gap-2 mb-3"><asp:TextBox ID="Search" runat="server" CssClass="form-control" placeholder="Tên hoặc mã đồ uống" MaxLength="100" /><asp:DropDownList ID="Category" runat="server" CssClass="form-select" /><asp:Button runat="server" Text="Tìm" OnClick="Filter" CssClass="btn btn-primary" /></div>
+<div class="pos-menu"><asp:Repeater ID="Menu" runat="server" OnItemCommand="AddDrink"><ItemTemplate><asp:LinkButton runat="server" CssClass="btn btn-outline-primary" CommandArgument='<%# Eval("MaDoUong") %>'><%#: Eval("TenDoUong") %><br/><%#: string.Format("{0:N0} đ", Eval("GiaBanHienTai")) %></asp:LinkButton></ItemTemplate></asp:Repeater></div>
+<asp:Label ID="EmptyMenu" runat="server" /></div></div>
+<div class="col-lg-6"><div class="card-custom p-3"><h5>Đơn hiện tại: <asp:Label ID="OrderLabel" runat="server" /></h5>
+<label>Nhân viên thực hiện</label><asp:DropDownList ID="Staff" runat="server" CssClass="form-select mb-2" />
+<label>Bàn / hình thức</label><asp:DropDownList ID="TableChoice" runat="server" CssClass="form-select mb-3" />
+<asp:GridView ID="Cart" runat="server" AutoGenerateColumns="false" CssClass="table" DataKeyNames="MaDoUong" OnRowCommand="CartCommand" EmptyDataText="Chọn món từ thực đơn để bắt đầu."><Columns>
+<asp:BoundField DataField="TenDoUong" HeaderText="Món" HtmlEncode="true" />
+<asp:TemplateField HeaderText="SL"><ItemTemplate><asp:TextBox ID="Quantity" runat="server" Text='<%# Eval("SoLuong") %>' TextMode="Number" Width="65" min="1" max="999" /></ItemTemplate></asp:TemplateField>
+<asp:TemplateField HeaderText="Ghi chú"><ItemTemplate><asp:TextBox ID="Note" runat="server" Text='<%# Eval("GhiChuMon") %>' MaxLength="255" CssClass="form-control pos-note" /></ItemTemplate></asp:TemplateField>
+<asp:BoundField DataField="ThanhTien" HeaderText="Tiền" DataFormatString="{0:N0}" />
+<asp:TemplateField><ItemTemplate><asp:LinkButton runat="server" Text="Xóa" CommandName="RemoveDrink" CommandArgument='<%# Eval("MaDoUong") %>' /></ItemTemplate></asp:TemplateField>
+</Columns></asp:GridView>
+<asp:Button runat="server" Text="Cập nhật số lượng / ghi chú" OnClick="UpdateCart" CssClass="btn btn-outline-primary mb-3" />
+<p>Tạm tính: <strong><asp:Label ID="Subtotal" runat="server" /></strong></p>
+<label>Giảm giá (đ, chỉ Admin / Quản lý đã đăng nhập)</label><asp:TextBox ID="Discount" runat="server" Text="0" TextMode="Number" CssClass="form-control mb-2" min="0" step="0.01" />
+<asp:RadioButtonList ID="Payment" runat="server" RepeatDirection="Horizontal"><asp:ListItem Value="TienMat" Selected="True">Tiền mặt</asp:ListItem><asp:ListItem Value="ChuyenKhoan">Chuyển khoản</asp:ListItem></asp:RadioButtonList>
+<asp:CheckBox ID="TransferConfirmed" runat="server" Text=" Đã kiểm tra nhận đủ tiền chuyển khoản" /><br/>
+<asp:Button runat="server" Text="Lưu đơn / chuyển bàn" OnClick="Save" CssClass="btn btn-outline-primary mt-3" />
+<asp:Button runat="server" Text="Xem trước thanh toán" OnClick="Preview" CssClass="btn btn-primary mt-3" />
+<asp:Button runat="server" Text="Đơn mới" OnClick="NewOrder" CssClass="btn btn-secondary mt-3" OnClientClick="return confirm('Bỏ các thay đổi chưa lưu để tạo đơn mới?');" />
+<asp:Panel ID="ConfirmPanel" runat="server" Visible="false" CssClass="border rounded p-3 mt-3"><asp:Label ID="PaymentSummary" runat="server" /><br/><asp:Button runat="server" Text="Xác nhận hoàn tất thanh toán" OnClick="Checkout" CssClass="btn btn-success mt-2" OnClientClick="return confirm('Xác nhận đã nhận đủ tiền?');" /></asp:Panel>
+</div></div></div>
+<div class="card-custom p-3 mt-4"><h5>Theo dõi đơn & lịch sử hóa đơn</h5><div class="d-flex gap-2 mb-3"><asp:TextBox ID="HistorySearch" runat="server" CssClass="form-control" placeholder="Mã đơn hoặc mã hóa đơn" MaxLength="100" /><asp:TextBox ID="HistoryDate" runat="server" TextMode="Date" CssClass="form-control" /><asp:Button runat="server" Text="Tra cứu" OnClick="Filter" CssClass="btn btn-primary" /></div>
+<asp:GridView ID="History" runat="server" AutoGenerateColumns="false" CssClass="table" OnRowCommand="OpenOrder" EmptyDataText="Không có đơn phù hợp."><Columns><asp:BoundField DataField="MaDonHang" HeaderText="Đơn"/><asp:BoundField DataField="TenBan" HeaderText="Bàn"/><asp:BoundField DataField="TrangThaiDon" HeaderText="Trạng thái"/><asp:BoundField DataField="MaHoaDon" HeaderText="Hóa đơn"/><asp:BoundField DataField="NgayGioThanhToan" HeaderText="Thanh toán" DataFormatString="{0:dd/MM/yyyy HH:mm}"/><asp:BoundField DataField="TienPhaiTra" HeaderText="Thực thu" DataFormatString="{0:N0}"/><asp:BoundField DataField="PhuongThucThanhToan" HeaderText="Phương thức"/><asp:TemplateField><ItemTemplate><asp:LinkButton runat="server" Text="Mở / xem hóa đơn" CommandName="Open" CommandArgument='<%# Eval("MaDonHang") %>' /></ItemTemplate></asp:TemplateField></Columns></asp:GridView></div>
+<asp:Panel ID="ReceiptPanel" runat="server" Visible="false" CssClass="card-custom p-4 mt-4"><div id="posReceipt"><h4>MOON CAFÉ — HÓA ĐƠN</h4><asp:Literal ID="Receipt" runat="server" /></div><button type="button" class="btn btn-outline-primary no-print" onclick="window.print()">In / lưu PDF hóa đơn</button></asp:Panel>
 </asp:Content>
-
-<asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-    <!-- HEADER -->
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
-        <div>
-            <span class="badge badge-soft-blue mb-1">Phân hệ F27 - F44 • Phụ trách: Lê Văn Điều</span>
-            <h4 class="fw-bold mb-0 text-dark">Màn hình Gọi món (POS), Đơn hàng & Thanh toán Hóa đơn</h4>
-        </div>
-        <ul class="nav nav-pills nav-pills-blue" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tabPOS" type="button">
-                    <i class="bi bi-cart-plus me-1"></i>Quầy Gọi món & Thu ngân (F27 - F42)
-                </button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link me-0" data-bs-toggle="tab" data-bs-target="#tabLichSuHoaDon" type="button">
-                    <i class="bi bi-receipt-cutoff me-1"></i>Theo dõi Đơn & Lịch sử Hóa đơn (F35, F43, F44)
-                </button>
-            </li>
-        </ul>
-    </div>
-
-    <div class="tab-content">
-        <!-- TAB 1: MÀN HÌNH POS GỌI MÓN & THANH TOÁN TRỰC TIẾP (F27 - F42) -->
-        <div class="tab-pane fade show active" id="tabPOS" role="tabpanel">
-            <div class="row g-4">
-                <!-- CỘT TRÁI (7 CỘT): CHỌN ĐỒ UỐNG TỪ MENU (F28, F29) -->
-                <div class="col-12 col-xl-7">
-                    <div class="card-custom h-100">
-                        <div class="card-header-custom flex-wrap gap-2">
-                            <div>
-                                <h6 class="fw-bold mb-0 text-dark"><i class="bi bi-cup-straw text-primary me-2"></i>Thực đơn chọn món nhanh (F28)</h6>
-                                <small class="text-muted">Quy tắc: Không cho phép thêm món đã hết hàng hoặc ngừng kinh doanh</small>
-                            </div>
-                            <div class="input-group input-group-sm" style="width: 230px;">
-                                <span class="input-group-text bg-light text-primary border-end-0"><i class="bi bi-search"></i></span>
-                                <input type="text" class="form-control border-start-0" placeholder="Tìm tên hoặc mã đồ uống..." />
-                            </div>
-                        </div>
-
-                        <div class="p-3">
-                            <!-- Bộ lọc danh mục nhanh -->
-                            <div class="d-flex flex-wrap gap-2 mb-3 pb-2 border-bottom">
-                                <button type="button" class="btn btn-sm btn-cafe-primary">Tất cả (0)</button>
-                                <button type="button" class="btn btn-sm btn-cafe-outline">Cà phê truyền thống</button>
-                                <button type="button" class="btn btn-sm btn-cafe-outline">Cà phê pha máy</button>
-                                <button type="button" class="btn btn-sm btn-cafe-outline">Trà trái cây</button>
-                                <button type="button" class="btn btn-sm btn-cafe-outline">Đá xay / Freeze</button>
-                            </div>
-
-                            <!-- Lưới món nước (F28, F29) -->
-                            <div class="row g-3">
-                                <div class="col-12">
-                                    <div class="p-5 text-center text-muted border rounded-3 bg-light">
-                                        <i class="bi bi-cup-straw fs-1 d-block text-secondary mb-2 opacity-50"></i>
-                                        <div class="fw-semibold">Chưa có món nào trên thực đơn</div>
-                                        <small class="text-muted">Các đồ uống đang kinh doanh sẽ xuất hiện tại đây để nhân viên chọn món</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- CỘT PHẢI (5 CỘT): CHI TIẾT ĐƠN HÀNG & THANH TOÁN HÓA ĐƠN (F27, F30 - F42) -->
-                <div class="col-12 col-xl-5">
-                    <div class="card-custom">
-                        <!-- Thông tin chung của Đơn hàng (F27, F34) -->
-                        <div class="card-header-custom bg-primary text-white">
-                            <div>
-                                <div class="d-flex align-items-center gap-2">
-                                    <h6 class="fw-bold mb-0">Đơn hàng mới</h6>
-                                    <span class="badge bg-white text-primary">Chờ gọi món</span>
-                                </div>
-                                <small class="opacity-75">Chọn bàn hoặc mang đi để bắt đầu phục vụ</small>
-                            </div>
-                            <button type="button" class="btn btn-sm btn-light text-primary fw-semibold" title="Tạo đơn mới (F27)">
-                                <i class="bi bi-file-earmark-plus"></i> Đơn mới
-                            </button>
-                        </div>
-
-                        <div class="p-3">
-                            <!-- Chọn bàn hoặc Mang đi + Nút chuyển bàn (F27, F34) -->
-                            <div class="row g-2 mb-3">
-                                <div class="col-8">
-                                    <label class="form-label small fw-semibold mb-1">Bàn phục vụ / Hình thức (F27)</label>
-                                    <select class="form-select form-select-sm fw-semibold text-primary">
-                                        <option selected>-- Chọn bàn phục vụ --</option>
-                                        <option>MANG ĐI (Take-away)</option>
-                                    </select>
-                                </div>
-                                <div class="col-4 d-flex align-items-end">
-                                    <a href="BanVaDatBan.aspx" class="btn btn-sm btn-cafe-outline w-100">
-                                        <i class="bi bi-arrow-left-right me-1"></i>Đổi bàn (F34)
-                                    </a>
-                                </div>
-                            </div>
-
-                            <!-- Danh sách món trong đơn (F30, F31, F32) -->
-                            <div class="table-responsive border rounded-3 mb-3">
-                                <table class="table table-sm table-cafe mb-0">
-                                    <thead>
-                                        <tr>
-                                            <th>Món & Ghi chú (F32)</th>
-                                            <th class="text-center" style="width: 105px;">SL (F30)</th>
-                                            <th class="text-end">Thành tiền</th>
-                                            <th style="width: 36px;"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td colspan="4" class="text-center text-muted py-4">
-                                                <i class="bi bi-cart-x fs-2 d-block text-secondary mb-1 opacity-50"></i>
-                                                <span class="fw-semibold">Chưa có món trong đơn hàng</span>
-                                                <small class="d-block text-muted">Chọn món từ danh sách bên trái để thêm vào đơn</small>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <!-- KHU VỰC TÍNH TIỀN, GIẢM GIÁ & PHƯƠNG THỨC THANH TOÁN (F33, F36 - F42) -->
-                            <div class="bg-light p-3 rounded-3 border mb-3">
-                                <div class="d-flex justify-content-between small mb-2">
-                                    <span class="text-muted">Tạm tính (4 ly - F33):</span>
-                                    <span class="fw-semibold">0 đ</span>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center small mb-2">
-                                    <span class="text-muted">Giảm giá / Khuyến mãi (F38):</span>
-                                    <div class="input-group input-group-sm" style="width: 145px;">
-                                        <input type="text" class="form-control text-end" value="10.000" />
-                                        <span class="input-group-text">đ</span>
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center pt-2 border-top">
-                                    <span class="fw-bold text-dark">TỔNG THANH TOÁN (F37):</span>
-                                    <span class="fw-bold text-primary fs-5">0 đ</span>
-                                </div>
-                            </div>
-
-                            <!-- Lựa chọn phương thức thanh toán (F39, F40) -->
-                            <div class="mb-3">
-                                <label class="form-label small fw-semibold mb-2">Phương thức thanh toán (F39 / F40)</label>
-                                <div class="row g-2">
-                                    <div class="col-6">
-                                        <input type="radio" class="btn-check" name="pttt" id="ptTienMat" checked />
-                                        <label class="btn btn-sm btn-cafe-outline w-100 py-2" for="ptTienMat">
-                                            <i class="bi bi-cash-coin me-1"></i>Tiền mặt (F39)
-                                        </label>
-                                    </div>
-                                    <div class="col-6">
-                                        <input type="radio" class="btn-check" name="pttt" id="ptChuyenKhoan" />
-                                        <label class="btn btn-sm btn-cafe-outline w-100 py-2" for="ptChuyenKhoan">
-                                            <i class="bi bi-qr-code me-1"></i>Chuyển khoản (F40)
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Các nút xử lý Đơn hàng & Hóa đơn (F36, F41, F42) -->
-                            <div class="d-flex gap-2">
-                                <button type="button" class="btn btn-cafe-outline flex-grow-1">
-                                    <i class="bi bi-save me-1"></i>Lưu đơn (F27)
-                                </button>
-                                <button type="button" class="btn btn-cafe-outline" data-bs-toggle="modal" data-bs-target="#modalInHoaDon" title="Xem & In hóa đơn (F42)">
-                                    <i class="bi bi-printer"></i> In (F42)
-                                </button>
-                                <button type="button" class="btn btn-cafe-primary flex-grow-1" data-bs-toggle="modal" data-bs-target="#modalInHoaDon">
-                                    <i class="bi bi-check2-circle me-1"></i>Thanh toán (F41)
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- TAB 2: TRA CỨU & LỊCH SỬ HÓA ĐƠN GIAO DỊCH (F35, F43, F44) -->
-        <div class="tab-pane fade" id="tabLichSuHoaDon" role="tabpanel">
-            <div class="card-custom">
-                <div class="card-header-custom flex-wrap gap-2">
-                    <div>
-                        <h6 class="fw-bold mb-0 text-dark">Tra cứu Hóa đơn & Lịch sử Giao dịch (F43, F44)</h6>
-                        <small class="text-muted">Quy tắc: Không thanh toán 2 lần cho cùng 1 hóa đơn • Không chỉnh sửa đơn đã thanh toán</small>
-                    </div>
-                    <div class="d-flex flex-wrap gap-2">
-                        <div class="input-group input-group-sm" style="width: 240px;">
-                            <span class="input-group-text bg-light text-primary border-end-0"><i class="bi bi-search"></i></span>
-                            <input type="text" class="form-control border-start-0" placeholder="Tìm theo mã HĐ, mã đơn (F43)..." />
-                        </div>
-                        <input type="date" class="form-control form-control-sm" value="2026-11-09" style="width: 145px;" />
-                    </div>
-                </div>
-
-                <div class="table-responsive">
-                    <table class="table table-cafe">
-                        <thead>
-                            <tr>
-                                <th>Mã HĐ</th>
-                                <th>Mã Đơn</th>
-                                <th>Bàn / Hình thức</th>
-                                <th>Thời gian</th>
-                                <th>Nhân viên</th>
-                                <th>Tổng tiền</th>
-                                <th>Giảm giá</th>
-                                <th>Thực thu</th>
-                                <th>Phương thức</th>
-                                <th>Trạng thái</th>
-                                <th class="text-end">Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td colspan="11" class="text-center text-muted py-5">
-                                    <i class="bi bi-inbox fs-1 d-block text-secondary mb-2 opacity-50"></i>
-                                    <div class="fw-semibold">Chưa có hóa đơn nào</div>
-                                    <small class="text-muted">Lịch sử hóa đơn sau khi thanh toán sẽ hiển thị tại đây</small>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL XÁC NHẬN THANH TOÁN & IN HÓA ĐƠN (F36, F41, F42) -->
-    <div class="modal fade" id="modalInHoaDon" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0 shadow">
-                <div class="modal-header bg-primary text-white">
-                    <h6 class="modal-title fw-bold"><i class="bi bi-receipt me-2"></i>Phiếu Hóa đơn Thanh toán (F36 / F42)</h6>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <div class="text-center border-bottom pb-3 mb-3">
-                        <h5 class="fw-bold text-primary mb-1">MOON CAFÉ - HÓA ĐƠN BÁN HÀNG</h5>
-                        <div class="small text-muted">Mã HĐ: <strong>--</strong> • Đơn hàng: <strong>--</strong></div>
-                        <div class="small text-muted">Bàn: <strong>--</strong> • Thu ngân: <strong>--</strong></div>
-                        <div class="small text-muted">Ngày giờ: 09/11/2026 14:35</div>
-                    </div>
-
-                    <table class="table table-sm small mb-3">
-                        <thead>
-                            <tr class="border-bottom">
-                                <th>Tên đồ uống</th>
-                                <th class="text-center">SL</th>
-                                <th class="text-end">Đơn giá</th>
-                                <th class="text-end">Thành tiền</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td colspan="4" class="text-center text-muted py-3">
-                                    <small>Chưa có chi tiết món thanh toán</small>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <div class="border-top pt-2 small">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span>Tổng tiền hàng:</span>
-                            <span class="fw-semibold">0 đ</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-1">
-                            <span>Giảm giá (F38):</span>
-                            <span class="fw-semibold">0 đ</span>
-                        </div>
-                        <div class="d-flex justify-content-between fs-6 fw-bold text-primary pt-1 border-top">
-                            <span>TỔNG THANH TOÁN (F37):</span>
-                            <span>0 đ</span>
-                        </div>
-                        <div class="d-flex justify-content-between mt-1 text-muted">
-                            <span>Phương thức:</span>
-                            <span>Tiền mặt / Chuyển khoản QR</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer bg-light">
-                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    <button type="button" class="btn btn-sm btn-cafe-outline" onclick="window.print();">
-                        <i class="bi bi-printer me-1"></i>In hóa đơn (F42)
-                    </button>
-                    <button type="button" class="btn btn-sm btn-cafe-primary" data-bs-dismiss="modal">
-                        <i class="bi bi-check2-all me-1"></i>Xác nhận hoàn tất (F41)
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-</asp:Content>
-
