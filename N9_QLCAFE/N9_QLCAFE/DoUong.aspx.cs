@@ -20,11 +20,62 @@ namespace N9_QLCAFE
             }
         }
 
+        // Nạp danh mục trước khi ASP.NET nhận dữ liệu PostBack
+        protected void Page_Init(object sender, EventArgs e)
+        {
+            NapDanhMucDropdowns("0");
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
         }
 
-        // Xử lý nút Chỉnh sửa và Xóa trong bảng
+        // ========================================
+        // NẠP DANH MỤC VÀO CÁC DROPDOWNLIST
+        // ========================================
+
+        private void NapDanhMucDropdowns(string maDanhMucDangChon)
+        {
+            DataTable dt = new DataTable();
+
+            using (SqlConnection conn = new SqlConnection(ChuoiKetNoi))
+            {
+                string sql = @"
+                    SELECT MaDanhMuc, TenDanhMuc
+                    FROM dbo.danhmuc
+                    ORDER BY MaDanhMuc";
+
+                using (SqlDataAdapter da = new SqlDataAdapter(sql, conn))
+                {
+                    da.Fill(dt);
+                }
+            }
+
+            ddlDanhMucLoc.Items.Clear();
+            ddlDanhMucLoc.Items.Add(
+                new ListItem("-- Tất cả danh mục (F10) --", "0"));
+
+            ddlDanhMucForm.Items.Clear();
+
+            foreach (DataRow row in dt.Rows)
+            {
+                string ma = row["MaDanhMuc"].ToString();
+                string ten = row["TenDanhMuc"].ToString();
+
+                ddlDanhMucLoc.Items.Add(new ListItem(ten, ma));
+                ddlDanhMucForm.Items.Add(new ListItem(ten, ma));
+            }
+
+            if (ddlDanhMucLoc.Items.FindByValue(maDanhMucDangChon) != null)
+                ddlDanhMucLoc.SelectedValue = maDanhMucDangChon;
+            else
+                ddlDanhMucLoc.SelectedValue = "0";
+        }
+
+        // ========================================
+        // QUẢN LÝ ĐỒ UỐNG
+        // ========================================
+
         protected void rpDoUong_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
             string maDoUong = Convert.ToString(e.CommandArgument);
@@ -33,20 +84,14 @@ namespace N9_QLCAFE
                 return;
 
             if (e.CommandName == "Sua")
-            {
                 LoadDoUong(maDoUong);
-            }
-            else if (e.CommandName == "Xoa")
-            {
+
+            if (e.CommandName == "Xoa")
                 XoaDoUong(maDoUong);
-            }
         }
 
-        // Lấy thông tin đồ uống để đưa vào Modal chỉnh sửa
         private void LoadDoUong(string maDoUong)
         {
-            ddlDanhMucForm.DataBind();
-
             using (SqlConnection conn = new SqlConnection(ChuoiKetNoi))
             {
                 string sql = @"
@@ -68,8 +113,9 @@ namespace N9_QLCAFE
                             txtMaDoUong.Text = reader["MaDoUong"].ToString();
                             txtTenDoUong.Text = reader["TenDoUong"].ToString();
 
-                            decimal gia = Convert.ToDecimal(reader["GiaBanHienTai"]);
-                            txtGiaBan.Text = gia.ToString(CultureInfo.InvariantCulture);
+                            txtGiaBan.Text = Convert.ToDecimal(
+                                reader["GiaBanHienTai"]
+                            ).ToString(CultureInfo.InvariantCulture);
 
                             txtMoTa.Text = reader["MoTa"] == DBNull.Value
                                 ? ""
@@ -82,14 +128,15 @@ namespace N9_QLCAFE
                                 ddlDanhMucForm.SelectedValue = maDanhMuc;
 
                             if (ddlTrangThaiForm.Items.FindByValue(trangThai) == null)
-                                ddlTrangThaiForm.Items.Add(new ListItem(trangThai, trangThai));
+                                ddlTrangThaiForm.Items.Add(
+                                    new ListItem(trangThai, trangThai));
 
                             ddlTrangThaiForm.SelectedValue = trangThai;
 
                             hfCheDo.Value = "Sua";
                             txtMaDoUong.ReadOnly = true;
 
-                            MoModal();
+                            MoModalDoUong();
                         }
                         else
                         {
@@ -100,37 +147,36 @@ namespace N9_QLCAFE
             }
         }
 
-        // Lưu thông tin thêm mới hoặc chỉnh sửa đồ uống
+        // Thêm mới hoặc cập nhật đồ uống
         protected void btnLuuDoUong_Click(object sender, EventArgs e)
         {
-            string maDoUong = txtMaDoUong.Text.Trim();
-            string tenDoUong = txtTenDoUong.Text.Trim();
+            string ma = txtMaDoUong.Text.Trim();
+            string ten = txtTenDoUong.Text.Trim();
             string moTa = txtMoTa.Text.Trim();
 
-            decimal giaBan;
+            decimal gia;
             int maDanhMuc;
 
-            if (string.IsNullOrWhiteSpace(maDoUong) ||
-                string.IsNullOrWhiteSpace(tenDoUong))
+            bool dangSua = hfCheDo.Value == "Sua";
+
+            if (string.IsNullOrWhiteSpace(ma) ||
+                string.IsNullOrWhiteSpace(ten))
             {
-                ThongBao("Vui lòng nhập mã và tên đồ uống.");
-                MoModal();
+                ThongBaoMoDoUong("Vui lòng nhập mã và tên đồ uống.");
                 return;
             }
 
             if (!decimal.TryParse(txtGiaBan.Text.Trim(),
-                NumberStyles.Number, CultureInfo.InvariantCulture, out giaBan)
-                || giaBan <= 0)
+                NumberStyles.Number, CultureInfo.InvariantCulture, out gia)
+                || gia <= 0)
             {
-                ThongBao("Giá bán phải là số lớn hơn 0.");
-                MoModal();
+                ThongBaoMoDoUong("Giá bán phải lớn hơn 0.");
                 return;
             }
 
             if (!int.TryParse(ddlDanhMucForm.SelectedValue, out maDanhMuc))
             {
-                ThongBao("Vui lòng chọn danh mục đồ uống.");
-                MoModal();
+                ThongBaoMoDoUong("Vui lòng chọn danh mục đồ uống.");
                 return;
             }
 
@@ -144,7 +190,7 @@ namespace N9_QLCAFE
 
                     string sql;
 
-                    if (hfCheDo.Value == "Sua")
+                    if (dangSua)
                     {
                         sql = @"
                             UPDATE dbo.douong
@@ -172,17 +218,19 @@ namespace N9_QLCAFE
 
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
-                        cmd.Parameters.Add("@MaDoUong", SqlDbType.VarChar, 20).Value = maDoUong;
+                        cmd.Parameters.Add("@MaDoUong", SqlDbType.VarChar, 20).Value = ma;
 
-                        cmd.Parameters.Add("@TenDoUong", SqlDbType.NVarChar, 100).Value = tenDoUong;
+                        cmd.Parameters.Add("@TenDoUong", SqlDbType.NVarChar, 100).Value = ten;
 
                         SqlParameter pGia = cmd.Parameters.Add("@GiaBan", SqlDbType.Decimal);
                         pGia.Precision = 18;
                         pGia.Scale = 2;
-                        pGia.Value = giaBan;
+                        pGia.Value = gia;
 
                         cmd.Parameters.Add("@MoTa", SqlDbType.NVarChar, -1).Value =
-                            string.IsNullOrWhiteSpace(moTa) ? (object)DBNull.Value : moTa;
+                            string.IsNullOrWhiteSpace(moTa)
+                                ? (object)DBNull.Value
+                                : moTa;
 
                         cmd.Parameters.Add("@TrangThai", SqlDbType.VarChar, 30).Value = trangThai;
 
@@ -192,13 +240,11 @@ namespace N9_QLCAFE
 
                         if (ketQua == 0)
                         {
-                            ThongBao("Không tìm thấy đồ uống cần cập nhật.");
+                            ThongBaoMoDoUong("Không tìm thấy đồ uống cần cập nhật.");
                             return;
                         }
                     }
                 }
-
-                bool dangSua = hfCheDo.Value == "Sua";
 
                 hfCheDo.Value = "Them";
                 txtMaDoUong.ReadOnly = false;
@@ -212,17 +258,17 @@ namespace N9_QLCAFE
             catch (SqlException ex)
             {
                 if (ex.Number == 2627 || ex.Number == 2601)
-                    ThongBao("Mã đồ uống đã tồn tại. Vui lòng sử dụng mã khác.");
+                    ThongBaoMoDoUong("Mã đồ uống đã tồn tại.");
                 else
-                    ThongBao("Không thể lưu đồ uống. Lỗi: " + ex.Message);
+                    ThongBaoMoDoUong("Lỗi SQL: " + ex.Message);
             }
             catch (Exception ex)
             {
-                ThongBao("Có lỗi khi lưu đồ uống: " + ex.Message);
+                ThongBaoMoDoUong("Có lỗi khi lưu đồ uống: " + ex.Message);
             }
         }
 
-        // Xóa đồ uống hoặc chuyển sang Ngừng kinh doanh nếu đã có giao dịch
+        // Xóa đồ uống hoặc chuyển sang ngừng kinh doanh
         private void XoaDoUong(string maDoUong)
         {
             try
@@ -250,32 +296,29 @@ namespace N9_QLCAFE
                                 soGiaoDich = Convert.ToInt32(cmd.ExecuteScalar());
                             }
 
-                            string sqlXuLy;
+                            string sql;
 
                             if (soGiaoDich > 0)
                             {
-                                sqlXuLy = @"
+                                sql = @"
                                     UPDATE dbo.douong
                                     SET TrangThaiKinhDoanh = 'NgungKinhDoanh'
                                     WHERE MaDoUong = @MaDoUong";
 
-                                thongBao = "Đồ uống đã có giao dịch nên không thể xóa hoàn toàn. Hệ thống đã chuyển sang Ngừng kinh doanh.";
+                                thongBao = "Đồ uống đã có giao dịch nên được chuyển sang Ngừng kinh doanh.";
                             }
                             else
                             {
-                                sqlXuLy = @"
-                                    DELETE FROM dbo.douong
-                                    WHERE MaDoUong = @MaDoUong";
-
+                                sql = "DELETE FROM dbo.douong WHERE MaDoUong = @MaDoUong";
                                 thongBao = "Xóa đồ uống thành công.";
                             }
 
-                            using (SqlCommand cmd = new SqlCommand(sqlXuLy, conn, tran))
+                            using (SqlCommand cmd = new SqlCommand(sql, conn, tran))
                             {
                                 cmd.Parameters.Add("@MaDoUong", SqlDbType.VarChar, 20).Value = maDoUong;
 
                                 if (cmd.ExecuteNonQuery() == 0)
-                                    throw new Exception("Không tìm thấy đồ uống cần xóa.");
+                                    throw new Exception("Không tìm thấy đồ uống.");
                             }
 
                             tran.Commit();
@@ -293,39 +336,347 @@ namespace N9_QLCAFE
             }
             catch (Exception ex)
             {
-                ThongBao("Không thể xóa đồ uống. Lỗi: " + ex.Message);
+                ThongBao("Không thể xử lý đồ uống: " + ex.Message);
             }
         }
 
-        // Tải lại bảng, tổng số sản phẩm và Menu
+        // ========================================
+        // QUẢN LÝ DANH MỤC F10
+        // ========================================
+
+        protected void rpDanhMuc_ItemCommand(object source, RepeaterCommandEventArgs e)
+        {
+            int maDanhMuc;
+
+            if (!int.TryParse(Convert.ToString(e.CommandArgument), out maDanhMuc))
+                return;
+
+            if (e.CommandName == "SuaDanhMuc")
+                LoadDanhMuc(maDanhMuc);
+
+            if (e.CommandName == "XoaDanhMuc")
+                XoaDanhMuc(maDanhMuc);
+        }
+
+        // Lấy danh mục cần chỉnh sửa
+        private void LoadDanhMuc(int maDanhMuc)
+        {
+            using (SqlConnection conn = new SqlConnection(ChuoiKetNoi))
+            {
+                string sql = @"
+                    SELECT TenDanhMuc
+                    FROM dbo.danhmuc
+                    WHERE MaDanhMuc = @MaDanhMuc";
+
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.Add("@MaDanhMuc", SqlDbType.Int).Value = maDanhMuc;
+
+                    conn.Open();
+
+                    object ketQua = cmd.ExecuteScalar();
+
+                    if (ketQua == null || ketQua == DBNull.Value)
+                    {
+                        ThongBaoMoDanhMuc("Không tìm thấy danh mục.");
+                        return;
+                    }
+
+                    hfMaDanhMuc.Value = maDanhMuc.ToString();
+                    txtTenDanhMuc.Text = ketQua.ToString();
+                    btnLuuDanhMuc.Text = "Cập nhật";
+
+                    MoModalDanhMuc();
+                }
+            }
+        }
+
+        // Thêm mới hoặc sửa danh mục
+        protected void btnLuuDanhMuc_Click(object sender, EventArgs e)
+        {
+            string tenDanhMuc = txtTenDanhMuc.Text.Trim();
+
+            int maDanhMuc = 0;
+
+            bool dangSua = int.TryParse(hfMaDanhMuc.Value, out maDanhMuc)
+                && maDanhMuc > 0;
+
+            if (string.IsNullOrWhiteSpace(tenDanhMuc))
+            {
+                ThongBaoMoDanhMuc("Vui lòng nhập tên danh mục.");
+                return;
+            }
+
+            if (tenDanhMuc.Length > 100)
+            {
+                ThongBaoMoDanhMuc("Tên danh mục không được vượt quá 100 ký tự.");
+                return;
+            }
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(ChuoiKetNoi))
+                {
+                    conn.Open();
+
+                    // Kiểm tra danh mục trùng tên
+                    string sqlTrung = @"
+                        SELECT COUNT(*)
+                        FROM dbo.danhmuc
+                        WHERE TenDanhMuc = @TenDanhMuc
+                        AND (@MaDanhMuc = 0 OR MaDanhMuc <> @MaDanhMuc)";
+
+                    using (SqlCommand cmd = new SqlCommand(sqlTrung, conn))
+                    {
+                        cmd.Parameters.Add("@TenDanhMuc", SqlDbType.NVarChar, 100).Value = tenDanhMuc;
+                        cmd.Parameters.Add("@MaDanhMuc", SqlDbType.Int).Value = dangSua ? maDanhMuc : 0;
+
+                        if (Convert.ToInt32(cmd.ExecuteScalar()) > 0)
+                        {
+                            ThongBaoMoDanhMuc("Tên danh mục đã tồn tại.");
+                            return;
+                        }
+                    }
+
+                    string sql;
+
+                    if (dangSua)
+                    {
+                        sql = @"
+                            UPDATE dbo.danhmuc
+                            SET TenDanhMuc = @TenDanhMuc
+                            WHERE MaDanhMuc = @MaDanhMuc";
+                    }
+                    else
+                    {
+                        sql = @"
+                            INSERT INTO dbo.danhmuc (TenDanhMuc, MoTa)
+                            VALUES (@TenDanhMuc, NULL)";
+                    }
+
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
+                    {
+                        cmd.Parameters.Add("@TenDanhMuc", SqlDbType.NVarChar, 100).Value = tenDanhMuc;
+
+                        if (dangSua)
+                            cmd.Parameters.Add("@MaDanhMuc", SqlDbType.Int).Value = maDanhMuc;
+
+                        int ketQua = cmd.ExecuteNonQuery();
+
+                        if (dangSua && ketQua == 0)
+                        {
+                            ThongBaoMoDanhMuc("Không tìm thấy danh mục cần cập nhật.");
+                            return;
+                        }
+                    }
+                }
+
+                ResetFormDanhMuc();
+                LamMoiDanhMuc();
+
+                ThongBaoMoDanhMuc(dangSua
+                    ? "Cập nhật danh mục thành công."
+                    : "Thêm danh mục thành công.");
+            }
+            catch (Exception ex)
+            {
+                ThongBaoMoDanhMuc("Không thể lưu danh mục: " + ex.Message);
+            }
+        }
+
+        // Xóa danh mục nếu chưa có đồ uống sử dụng
+        private void XoaDanhMuc(int maDanhMuc)
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(ChuoiKetNoi))
+                {
+                    conn.Open();
+
+                    using (SqlTransaction tran = conn.BeginTransaction(IsolationLevel.Serializable))
+                    {
+                        try
+                        {
+                            string sqlKiemTra = @"
+                                SELECT COUNT(*)
+                                FROM dbo.douong WITH (UPDLOCK, HOLDLOCK)
+                                WHERE MaDanhMuc = @MaDanhMuc";
+
+                            int soMon;
+
+                            using (SqlCommand cmd = new SqlCommand(sqlKiemTra, conn, tran))
+                            {
+                                cmd.Parameters.Add("@MaDanhMuc", SqlDbType.Int).Value = maDanhMuc;
+                                soMon = Convert.ToInt32(cmd.ExecuteScalar());
+                            }
+
+                            if (soMon > 0)
+                            {
+                                tran.Rollback();
+
+                                ThongBaoMoDanhMuc(
+                                    "Không thể xóa danh mục vì đang có "
+                                    + soMon
+                                    + " đồ uống sử dụng. Vui lòng chuyển đồ uống sang danh mục khác trước.");
+
+                                return;
+                            }
+
+                            string sqlXoa = @"
+                                DELETE FROM dbo.danhmuc
+                                WHERE MaDanhMuc = @MaDanhMuc";
+
+                            using (SqlCommand cmd = new SqlCommand(sqlXoa, conn, tran))
+                            {
+                                cmd.Parameters.Add("@MaDanhMuc", SqlDbType.Int).Value = maDanhMuc;
+
+                                if (cmd.ExecuteNonQuery() == 0)
+                                    throw new Exception("Không tìm thấy danh mục cần xóa.");
+                            }
+
+                            tran.Commit();
+                        }
+                        catch
+                        {
+                            if (tran.Connection != null)
+                                tran.Rollback();
+
+                            throw;
+                        }
+                    }
+                }
+
+                ResetFormDanhMuc();
+                LamMoiDanhMuc();
+
+                ThongBaoMoDanhMuc("Xóa danh mục thành công.");
+            }
+            catch (SqlException ex)
+            {
+                if (ex.Number == 547)
+                    ThongBaoMoDanhMuc("Không thể xóa danh mục vì đang được dữ liệu khác sử dụng.");
+                else
+                    ThongBaoMoDanhMuc("Lỗi SQL: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                ThongBaoMoDanhMuc("Không thể xóa danh mục: " + ex.Message);
+            }
+        }
+
+        // ========================================
+        // LÀM MỚI DỮ LIỆU SAU KHI THAO TÁC
+        // ========================================
+
+        private void LamMoiDanhMuc()
+        {
+            string danhMucDangChon = ddlDanhMucLoc.SelectedValue;
+
+            NapDanhMucDropdowns(danhMucDangChon);
+
+            LamMoiDanhSach();
+        }
+
         private void LamMoiDanhSach()
         {
+            rpDanhMuc.DataBind();
             rpDoUong.DataBind();
             rpTongDoUong.DataBind();
             lvMenuConHang.DataBind();
         }
 
-        // Mở lại Modal sau khi chọn chỉnh sửa hoặc có lỗi nhập liệu
-        private void MoModal()
+        private void ResetFormDanhMuc()
+        {
+            hfMaDanhMuc.Value = "";
+            txtTenDanhMuc.Text = "";
+            btnLuuDanhMuc.Text = "Thêm";
+        }
+
+        // ========================================
+        // MODAL VÀ THÔNG BÁO
+        // ========================================
+
+        private void MoModalDanhMuc()
         {
             string script = @"
                 window.addEventListener('load', function () {
-                    var modalElement = document.getElementById('modalThemDoUong');
+                    var modalElement = document.getElementById('modalDanhMuc');
+
                     if (modalElement && window.bootstrap) {
                         bootstrap.Modal.getOrCreateInstance(modalElement).show();
                     }
                 });";
 
             Page.ClientScript.RegisterStartupScript(
-                GetType(), "MoModalDoUong", script, true);
+                GetType(),
+                "MoModalDanhMuc" + Guid.NewGuid().ToString("N"),
+                script,
+                true);
         }
 
-        // Hiển thị thông báo
+        private void ThongBaoMoDanhMuc(string noiDung)
+        {
+            string safe = HttpUtility.JavaScriptStringEncode(noiDung);
+
+            string script = @"
+                alert('" + safe + @"');
+
+                var modalElement = document.getElementById('modalDanhMuc');
+
+                if (modalElement && window.bootstrap) {
+                    bootstrap.Modal.getOrCreateInstance(modalElement).show();
+                }";
+
+            Page.ClientScript.RegisterStartupScript(
+                GetType(),
+                "ThongBaoDanhMuc" + Guid.NewGuid().ToString("N"),
+                script,
+                true);
+        }
+
+        private void MoModalDoUong()
+        {
+            string script = @"
+                window.addEventListener('load', function () {
+                    var modalElement = document.getElementById('modalThemDoUong');
+
+                    if (modalElement && window.bootstrap) {
+                        bootstrap.Modal.getOrCreateInstance(modalElement).show();
+                    }
+                });";
+
+            Page.ClientScript.RegisterStartupScript(
+                GetType(),
+                "MoModalDoUong" + Guid.NewGuid().ToString("N"),
+                script,
+                true);
+        }
+
+        private void ThongBaoMoDoUong(string noiDung)
+        {
+            string safe = HttpUtility.JavaScriptStringEncode(noiDung);
+
+            string script = @"
+                alert('" + safe + @"');
+
+                var modalElement = document.getElementById('modalThemDoUong');
+
+                if (modalElement && window.bootstrap) {
+                    bootstrap.Modal.getOrCreateInstance(modalElement).show();
+                }";
+
+            Page.ClientScript.RegisterStartupScript(
+                GetType(),
+                "ThongBaoDoUong" + Guid.NewGuid().ToString("N"),
+                script,
+                true);
+        }
+
         private void ThongBao(string noiDung)
         {
-            string noiDungAnToan = HttpUtility.JavaScriptStringEncode(noiDung);
+            string safe = HttpUtility.JavaScriptStringEncode(noiDung);
 
-            string script = "alert('" + noiDungAnToan + "');";
+            string script = "alert('" + safe + "');";
 
             Page.ClientScript.RegisterStartupScript(
                 GetType(),
