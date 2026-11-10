@@ -48,7 +48,15 @@ namespace N9_QLCAFE
             catch (InvalidOperationException ex) { Message.Text = HttpUtility.HtmlEncode(ex.Message); Message.CssClass = "alert alert-warning d-block"; }
             catch (SqlException ex) { Trace.Warn("POS", "SQL operation failed", ex); Message.Text = "Không thể hoàn tất giao dịch. Vui lòng kiểm tra kết nối CSDL và tải lại đơn trước khi thử lại."; Message.CssClass = "alert alert-danger d-block"; }
         }
-        protected override void OnInit(EventArgs e) { base.OnInit(e); ViewStateUserKey = Session.SessionID; }
+        protected override void OnInit(EventArgs e)
+        {
+            base.OnInit(e);
+            // Persist a session value so ASP.NET issues the session cookie on the first GET.
+            // An empty session may get a different SessionID on the next postback.
+            const string key = "POS.ViewStateKey";
+            if (Session[key] == null) Session[key] = Guid.NewGuid().ToString("N");
+            ViewStateUserKey = (string)Session[key];
+        }
         protected void Page_Load(object sender, EventArgs e) {
             if (!IsPostBack) Run(delegate {
                 Staff.DataSource = Query("SELECT MaNhanVien,HoTen FROM nhanvien WHERE TrangThaiLamViec='DangLamViec' ORDER BY HoTen");
