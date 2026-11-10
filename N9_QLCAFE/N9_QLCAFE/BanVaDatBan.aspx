@@ -36,7 +36,7 @@
                     <div class="small text-muted">0 Khu vực phục vụ</div>
                 </div>
                 <div class="stat-icon">
-                    <i class="bi bi-grid-3x3-gap"></i
+                    <i class="bi bi-grid-3x3-gap"></i>
                 </div>
             </div>
         </div>
