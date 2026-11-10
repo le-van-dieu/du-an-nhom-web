@@ -1,0 +1,5 @@
+-- Thêm cột hạng thành viên (phục vụ tính năng F38 - giảm giá)
+ALTER TABLE khachhang ADD HangThanhVien NVARCHAR(50) DEFAULT N'Moi';
+
+-- Thêm cột ghi chú sở thích của khách hàng
+ALTER TABLE khachhang ADD GhiChu NVARCHAR(MAX) NULL;
