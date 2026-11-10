@@ -1,5 +1,8 @@
--- Thêm cột hạng thành viên (phục vụ tính năng F38 - giảm giá)
-ALTER TABLE khachhang ADD HangThanhVien NVARCHAR(50) DEFAULT N'Moi';
-
--- Thêm cột ghi chú sở thích của khách hàng
-ALTER TABLE khachhang ADD GhiChu NVARCHAR(MAX) NULL;
+﻿-- Chạy trong CSDL quanlyquancafe; có thể chạy lại an toàn.
+SET XACT_ABORT ON;
+BEGIN TRANSACTION;
+IF COL_LENGTH('dbo.khachhang', 'HangThanhVien') IS NULL
+    ALTER TABLE dbo.khachhang ADD HangThanhVien NVARCHAR(50) DEFAULT N'Moi' WITH VALUES;
+IF COL_LENGTH('dbo.khachhang', 'GhiChu') IS NULL
+    ALTER TABLE dbo.khachhang ADD GhiChu NVARCHAR(MAX) NULL;
+COMMIT TRANSACTION;

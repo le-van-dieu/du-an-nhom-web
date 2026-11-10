@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
@@ -176,25 +176,27 @@ namespace N9_QLCAFE
                 conn.Open();
                 if (EditingMaKH == 0)
                 {
-                    // Thêm mới (Kiểm tra cột GhiChu có tồn tại hay không, nếu bảng chưa có cột GhiChu có thể lược bỏ)
-                    string query = "INSERT INTO khachhang (TenKhachHang, SoDienThoai, NgayTao, HangThanhVien) VALUES (@TenKH, @SDT, GETDATE(), @HangTV)";
+                    // Lưu đầy đủ thông tin khách hàng, gồm ghi chú sở thích.
+                    string query = "INSERT INTO khachhang (TenKhachHang, SoDienThoai, NgayTao, HangThanhVien, GhiChu) VALUES (@TenKH, @SDT, GETDATE(), @HangTV, @GhiChu)";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@TenKH", tenKH);
                         cmd.Parameters.AddWithValue("@SDT", sdt);
                         cmd.Parameters.AddWithValue("@HangTV", hangTV);
+                        cmd.Parameters.Add("@GhiChu", System.Data.SqlDbType.NVarChar, -1).Value = ghiChu;
                         cmd.ExecuteNonQuery();
                     }
                 }
                 else
                 {
                     // Cập nhật
-                    string query = "UPDATE khachhang SET TenKhachHang = @TenKH, SoDienThoai = @SDT, HangThanhVien = @HangTV WHERE MaKhachHang = @MaKH";
+                    string query = "UPDATE khachhang SET TenKhachHang = @TenKH, SoDienThoai = @SDT, HangThanhVien = @HangTV, GhiChu = @GhiChu WHERE MaKhachHang = @MaKH";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
                         cmd.Parameters.AddWithValue("@TenKH", tenKH);
                         cmd.Parameters.AddWithValue("@SDT", sdt);
                         cmd.Parameters.AddWithValue("@HangTV", hangTV);
+                        cmd.Parameters.Add("@GhiChu", System.Data.SqlDbType.NVarChar, -1).Value = ghiChu;
                         cmd.Parameters.AddWithValue("@MaKH", EditingMaKH);
                         cmd.ExecuteNonQuery();
                     }
