@@ -131,7 +131,7 @@ Sau đó mở file `N9_QLCAFE/N9_QLCAFE.sln` trên Visual Studio và làm việc
 - Lư Quốc Thắng: `feat/ban-datban`
 - Lê Văn Điều: `feat/pos-thanhtoan`
 - Nguyễn Nhật Anh: `feat/nhanvien-thongke`
-- Mẫn Vinh: `feat/kiemthu-nghiemthu`
+- Nguyễn Mẫn Vinh: `feat/kiemthu-nghiemthu`
 
 Lệnh tạo nhánh mới (chỉ làm lần đầu):
 ```bash
