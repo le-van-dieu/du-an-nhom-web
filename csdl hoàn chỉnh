@@ -169,11 +169,13 @@ CREATE TABLE [dbo].[khachhang](
 [TenKhachHang] [nvarchar](100) NOT NULL,
 [SoDienThoai] [varchar](15) NOT NULL,
 [NgayTao] [datetime] NOT NULL,
+[HangThanhVien] [nvarchar](50) NULL,
+[GhiChu] [nvarchar](max) NULL,
 PRIMARY KEY CLUSTERED
 (
 [MaKhachHang] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 SET ANSI_PADDING OFF
 GO
@@ -302,6 +304,8 @@ GO
 ALTER TABLE [dbo].[hoadon] ADD DEFAULT ((0.00)) FOR [GiamGia]
 GO
 ALTER TABLE [dbo].[khachhang] ADD DEFAULT (getdate()) FOR [NgayTao]
+GO
+ALTER TABLE [dbo].[khachhang] ADD DEFAULT (N'Moi') FOR [HangThanhVien]
 GO
 ALTER TABLE [dbo].[nhanvien] ADD DEFAULT ('DangLamViec') FOR [TrangThaiLamViec]
 GO
@@ -449,11 +453,12 @@ INSERT INTO [dbo].[douong] ([MaDoUong], [TenDoUong], [GiaBanHienTai], [HinhAnh],
 ('BN01', N'Bánh Tiramisu', 38000.00, 'bn_tiramisu.jpg', N'Bánh ngọt vị cà phê Ý', 'ConHang', 4);
 GO
 
--- 8. NẠP DỮ LIỆU BẢNG: khachhang
+-- 8. NẠP DỮ LIỆU BẢNG: khachhang (Đã thêm dữ liệu cho HangThanhVien và GhiChu)
 SET IDENTITY_INSERT [dbo].[khachhang] ON;
-INSERT INTO [dbo].[khachhang] ([MaKhachHang], [TenKhachHang], [SoDienThoai], [NgayTao]) VALUES
-(1, N'Trần Văn Khách', '0988776655', GETDATE()),
-(2, N'Lê Thị Hương', '0977665544', GETDATE());
+INSERT INTO [dbo].[khachhang] ([MaKhachHang], [TenKhachHang], [SoDienThoai], [NgayTao], [HangThanhVien], [GhiChu]) VALUES
+(1, N'Trần Văn Khách', '0988776655', GETDATE(), N'VIP', N'Thích ít ngọt, hay ngồi khu vực tầng 1'),
+(2, N'Lê Thị Hương', '0977665544', GETDATE(), N'ThanThiet', N'Khách quen gọi trà sữa matcha'),
+(3, N'Nguyễn Hoàng Huy', '0966554433', GETDATE(), N'Moi', N'Khách mới ghé lần đầu');
 SET IDENTITY_INSERT [dbo].[khachhang] OFF;
 GO
 
