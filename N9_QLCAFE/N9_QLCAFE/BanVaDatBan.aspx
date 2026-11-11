@@ -112,16 +112,16 @@
         </div>
         <div class="d-flex flex-wrap gap-2">
             <button type="button" class="btn btn-outline-secondary rounded-3" data-bs-toggle="modal" data-bs-target="#modalKhuVuc">
-                <i class="bi bi-layers me-1 text-primary"></i>Khu vực (F17)
+                <i class="bi bi-layers me-1 text-primary"></i>Khu vực 
             </button>
             <button type="button" class="btn btn-outline-secondary rounded-3" data-bs-toggle="modal" data-bs-target="#modalChuyenBan">
-                <i class="bi bi-arrow-left-right me-1 text-warning"></i>Chuyển bàn (F19)
+                <i class="bi bi-arrow-left-right me-1 text-warning"></i>Chuyển bàn 
             </button>
             <asp:LinkButton runat="server" CssClass="btn btn-outline-primary rounded-3" OnClick="NewTable">
-                <i class="bi bi-plus-square me-1"></i>Thêm bàn (F14)
+                <i class="bi bi-plus-square me-1"></i>Thêm bàn 
             </asp:LinkButton>
             <asp:LinkButton runat="server" CssClass="btn btn-primary rounded-3 shadow-sm px-3" OnClick="NewReservation">
-                <i class="bi bi-calendar-plus me-1"></i>Tạo đặt bàn mới (F21)
+                <i class="bi bi-calendar-plus me-1"></i>Tạo đặt bàn mới 
             </asp:LinkButton>
         </div>
     </div>
