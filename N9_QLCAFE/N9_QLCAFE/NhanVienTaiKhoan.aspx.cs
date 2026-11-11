@@ -373,11 +373,12 @@ namespace N9_QLCAFE
             try
             {
                 int changed = CafeData.Execute(existing == null
-                    ? @"INSERT taikhoan (TenDangNhap,MatKhauHash,VaiTro,TrangThaiKhoa,NgayTao,MaNhanVien)
-                        VALUES (@name,@hash,@role,@locked,GETDATE(),@employee)"
-                    : @"UPDATE taikhoan SET MatKhauHash=COALESCE(@hash,MatKhauHash),VaiTro=@role,TrangThaiKhoa=@locked,MaNhanVien=@employee
+                    ? @"INSERT taikhoan (TenDangNhap,MatKhauHash,MatKhau,VaiTro,TrangThaiKhoa,NgayTao,MaNhanVien)
+                        VALUES (@name,@hash,@plain,@role,@locked,GETDATE(),@employee)"
+                    : @"UPDATE taikhoan SET MatKhauHash=COALESCE(@hash,MatKhauHash),MatKhau=COALESCE(@plain,MatKhau),VaiTro=@role,TrangThaiKhoa=@locked,MaNhanVien=@employee
                         WHERE TenDangNhap=@name",
                     CafeData.Arg("@name",name), new SqlParameter("@hash",SqlDbType.VarChar,255) { Value=(object)hash ?? DBNull.Value },
+                    new SqlParameter("@plain",SqlDbType.NVarChar,256) { Value=newPassword ? (object)password : DBNull.Value },
                     CafeData.Arg("@role",role), CafeData.Arg("@locked",locked), CafeData.Arg("@employee",ddlNhanVienTaiKhoan.SelectedValue));
                 accountMessage.Text = changed == 1 ? "Đã lưu tài khoản." : "Tài khoản đã thay đổi. Vui lòng tải lại.";
                 ViewState.Remove("EditAccount");

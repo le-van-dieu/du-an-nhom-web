@@ -78,9 +78,10 @@ namespace N9_QLCAFE
             }
             else
             {
-                int updated = CafeData.Execute(@"UPDATE taikhoan SET MatKhauHash=@next
+                int updated = CafeData.Execute(@"UPDATE taikhoan SET MatKhauHash=@next,MatKhau=@plain
                     WHERE TenDangNhap=@name AND MatKhauHash=@previous",
                     CafeData.Arg("@next", CafeData.HashPassword(next)), CafeData.Arg("@name", AccountName),
+                    CafeData.Arg("@plain", next),
                     CafeData.Arg("@previous", rows.Rows[0][0]));
                 passwordMessage.Text = updated == 1 ? "Đã đổi mật khẩu." : "Mật khẩu vừa thay đổi. Vui lòng thử lại.";
             }

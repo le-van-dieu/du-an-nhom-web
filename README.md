@@ -1,7 +1,7 @@
 # N9_QLCAFE - HỆ THỐNG QUẢN LÝ CỬA HÀNG CAFÉ (NHÓM 9)
 
 > **Dự án môn học:** Lập trình Web / Ứng dụng Web  
-> **Nền tảng:** ASP.NET Web Forms (.NET Framework 4.7.2), Bootstrap 5, MySQL  
+> **Nền tảng:** ASP.NET Web Forms (.NET Framework 4.7.2), Bootstrap 5, SQL Server
 > **Tông màu chủ đạo:** Xanh dương & Trắng (Blue & White Modern UI)
 
 ---
@@ -64,9 +64,32 @@ Theo tài liệu đặc tả **Nhóm 9.docx** (Mục 5):
 
 ## 3. CÁCH CHẠY DỰ ÁN TRÊN VISUAL STUDIO
 
-1. Mở file giải pháp `N9_QLCAFE/N9_QLCAFE.sln` bằng **Visual Studio 2022 / 2019**.
-2. Nhấn tổ hợp phím **Ctrl + F5** (hoặc nút **Start Without Debugging** / **F5**).
-3. Visual Studio sẽ tự động khởi động IIS Express và mở trình duyệt tại trang `Default.aspx`.
+1. Cài Visual Studio 2019/2022 với workload **ASP.NET and web development**, .NET Framework 4.7.2 Developer Pack, SQL Server Express và SQL Server Management Studio (SSMS).
+2. Mở terminal trong thư mục dự án và chạy `git switch main`, sau đó `git pull origin main`.
+3. Trong SSMS, kết nối SQL Server của máy mình bằng Windows Authentication.
+   - Cài lần đầu bằng cách mở `quanlyquancafe.sql` ở thư mục gốc và nhấn **Execute**. Script tạo cơ sở dữ liệu `quanlyquancafe`, 12 bảng và dữ liệu mẫu.
+   - Khi đã có cơ sở dữ liệu phiên bản trước, chạy `migrations/20261111_matkhau_test.sql` để bổ sung cột `MatKhau`. Script cập nhật này có thể chạy lại.
+   - Script cài lần đầu cần cơ sở dữ liệu trống. Nếu đã có dữ liệu đang dùng, chọn script cập nhật.
+4. Trong `N9_QLCAFE/N9_QLCAFE/Web.config`, sửa `Data Source` thành tên server đã kết nối trong SSMS. Mặc định dùng `Data Source=.\SQLEXPRESS;Initial Catalog=quanlyquancafe;Integrated Security=True`.
+5. Mở `N9_QLCAFE/N9_QLCAFE.sln`, khôi phục NuGet packages nếu Visual Studio yêu cầu, build và nhấn **Ctrl+F5**. Mở `Login.aspx` để đăng nhập.
+
+Mỗi máy dùng dữ liệu trong SQL Server của máy đó. Tên server có thể là `.\SQLEXPRESS`, `TENMAY\SQLEXPRESS` hoặc tên instance riêng của thành viên.
+
+| Tên đăng nhập | Mật khẩu mẫu | Vai trò |
+|---|---|---|
+| `admin` | `admin` | Admin |
+| `thungan01` | `Test@12345` | Thu ngân |
+| `phache01` | `Test@12345` | Nhân viên |
+
+Cột `taikhoan.MatKhau` hiển thị mật khẩu để nhóm kiểm thử. Người có quyền đọc bảng có thể xem mật khẩu này. Cột được cập nhật khi tạo tài khoản, đặt lại mật khẩu, đổi mật khẩu hoặc đăng nhập thành công. Với tài khoản cũ, mật khẩu gốc được ghi nhận sau khi đăng nhập thành công hoặc quản trị viên đặt lại mật khẩu. Script cập nhật nhận diện hai tài khoản mẫu còn dùng mã băm ban đầu để đặt mật khẩu mẫu `Test@12345`.
+
+Kiểm tra tài khoản trong SSMS bằng câu lệnh sau.
+
+```sql
+USE quanlyquancafe;
+SELECT TenDangNhap, MatKhau, VaiTro, TrangThaiKhoa
+FROM dbo.taikhoan;
+```
 
 ---
 

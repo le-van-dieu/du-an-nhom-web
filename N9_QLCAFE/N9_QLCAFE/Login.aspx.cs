@@ -20,6 +20,9 @@ namespace N9_QLCAFE
                 return;
             }
 
+            CafeData.Execute("UPDATE taikhoan SET MatKhau=@plain WHERE TenDangNhap=@name AND MatKhauHash=@hash",
+                CafeData.Arg("@plain", password.Text), CafeData.Arg("@name", name),
+                CafeData.Arg("@hash", account.Rows[0]["MatKhauHash"]));
             Session.Clear();
             FormsAuthentication.SetAuthCookie(name, false);
             Response.Redirect(SiteMaster.HomeFor((string)account.Rows[0]["VaiTro"]));

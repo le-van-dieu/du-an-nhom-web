@@ -67,6 +67,7 @@ GO
 CREATE TABLE [dbo].[taikhoan](
 [TenDangNhap] [varchar](50) NOT NULL,
 [MatKhauHash] [varchar](255) NOT NULL,
+[MatKhau] [nvarchar](256) NULL,
 [VaiTro] [varchar](20) NOT NULL,
 [TrangThaiKhoa] [tinyint] NOT NULL,
 [NgayTao] [datetime] NOT NULL,
@@ -483,4 +484,12 @@ GO
 INSERT INTO [dbo].[chitietdonhang] ([MaDonHang], [MaDoUong], [SoLuong], [DonGiaTaiThoiDiemGoi], [GhiChuMon], [ThanhTien]) VALUES
 ('DH2026051101', 'CF01', 2, 25000.00, N'Ít đường', 50000.00),
 ('DH2026051101', 'TS01', 1, 35000.00, N'Nhiều trân châu', 35000.00);
+GO
+
+-- Mật khẩu mẫu để nhóm kiểm thử.
+UPDATE dbo.taikhoan SET MatKhau=N'admin' WHERE TenDangNhap='admin';
+UPDATE dbo.taikhoan
+SET MatKhau=N'Test@12345',
+    MatKhauHash=LOWER(CONVERT(varchar(64),HASHBYTES('SHA2_256','Test@12345'),2))
+WHERE TenDangNhap IN ('phache01','thungan01');
 GO
