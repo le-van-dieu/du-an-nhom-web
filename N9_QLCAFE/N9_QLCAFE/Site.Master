@@ -19,7 +19,7 @@
         <div class="app-wrapper">
             <!-- SIDEBAR ĐIỀU HƯỚNG CHÍNH -->
             <aside class="app-sidebar">
-                <a href="Default.aspx" class="sidebar-brand">
+                <a href="<%: HomeFor(AccountRole) %>" class="sidebar-brand">
                     <div class="brand-icon">
                         <img src="Content/moon-logo.svg" alt="MOON CAFÉ Logo" />
                     </div>
@@ -31,10 +31,10 @@
 
                 <div class="sidebar-menu">
                     <div class="menu-label">Tổng quan & Báo cáo</div>
-                    <a href="Default.aspx" class="sidebar-link <%= Request.Url.AbsolutePath.EndsWith("Default.aspx") || Request.Url.AbsolutePath == "/" ? "active" : "" %>">
+                    <% if (CanAccess("Default.aspx")) { %><a href="Default.aspx" class="sidebar-link <%= Request.Url.AbsolutePath.EndsWith("Default.aspx") || Request.Url.AbsolutePath == "/" ? "active" : "" %>">
                         <i class="bi bi-bar-chart-line-fill"></i>
                         <span>Thống kê & Doanh thu</span>
-                    </a>
+                    </a><% } %>
 
                     <div class="menu-label mt-2">Nghiệp vụ Bán hàng</div>
                     <a href="GoiMonThanhToan.aspx" class="sidebar-link <%= Request.Url.AbsolutePath.EndsWith("GoiMonThanhToan.aspx") ? "active" : "" %>">
@@ -51,31 +51,22 @@
                         <i class="bi bi-cup-straw"></i>
                         <span>Đồ uống & Menu</span>
                     </a>
-                    <a href="NhanVienTaiKhoan.aspx" class="sidebar-link <%= Request.Url.AbsolutePath.EndsWith("NhanVienTaiKhoan.aspx") ? "active" : "" %>">
+                    <% if (CanAccess("NhanVienTaiKhoan.aspx")) { %><a href="NhanVienTaiKhoan.aspx" class="sidebar-link <%= Request.Url.AbsolutePath.EndsWith("NhanVienTaiKhoan.aspx") ? "active" : "" %>">
                         <i class="bi bi-people-fill"></i>
                         <span>Nhân viên & Tài khoản</span>
-                    </a>
+                    </a><% } %>
                     <a href="KhachHang.aspx" class="sidebar-link <%= Request.Url.AbsolutePath.EndsWith("KhachHang.aspx") ? "active" : "" %>">
                         <i class="bi bi-person-hearts"></i>
                         <span>Quản lý Khách hàng</span>
                     </a>
 
-                    <div class="menu-label mt-2">Hệ thống & Kiểm thử</div>
-                    <a href="KiemThuNghiemThu.aspx" class="sidebar-link <%= Request.Url.AbsolutePath.EndsWith("KiemThuNghiemThu.aspx") ? "active" : "" %>">
-                        <i class="bi bi-clipboard2-check-fill"></i>
-                        <span>Kiểm thử & Nghiệm thu</span>
-                    </a>
-                    <a href="Login.aspx" class="sidebar-link">
-                        <i class="bi bi-box-arrow-in-right"></i>
-                        <span>Trang Đăng nhập (F01)</span>
-                    </a>
                 </div>
 
                 <div class="sidebar-footer">
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="small">
                             <div class="fw-semibold text-white">Nhóm 9 - WebForms</div>
-                            <div style="font-size: 0.72rem; color: #bfdbfe;">MySQL • ASP.NET 4.7.2</div>
+                            <div style="font-size: 0.72rem; color: #bfdbfe;">SQL Server • ASP.NET 4.7.2</div>
                         </div>
                         <span class="badge bg-light text-primary fw-bold">v1.0</span>
                     </div>
@@ -87,12 +78,7 @@
                 <!-- TOPBAR -->
                 <header class="app-topbar">
                     <div class="d-flex align-items-center gap-3">
-                        <div class="input-group input-group-sm" style="width: 310px;">
-                            <span class="input-group-text bg-light border-end-0 text-primary">
-                                <i class="bi bi-search"></i>
-                            </span>
-                            <input type="text" class="form-control bg-light border-start-0" placeholder="Tìm nhanh món, mã bàn, mã hóa đơn..." />
-                        </div>
+
                         <span class="badge badge-soft-blue d-none d-md-inline-flex align-items-center gap-1">
                             <i class="bi bi-clock-history"></i> Ca sáng: 07:00 - 15:00
                         </span>
@@ -110,30 +96,28 @@
                                     N9
                                 </div>
                                 <div class="text-start d-none d-sm-block" style="line-height: 1.15;">
-                                    <div class="fw-semibold small text-dark">Quản trị viên (Admin)</div>
-                                    <span class="text-primary" style="font-size: 0.72rem;">Toàn quyền hệ thống</span>
+                                    <div class="fw-semibold small text-dark"><%: EmployeeName %></div>
+                                    <span class="text-primary" style="font-size: 0.72rem;"><%: AccountRole %></span>
                                 </div>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
                                 <li class="px-3 py-2 border-bottom">
-                                    <div class="fw-semibold small">Tài khoản: admin_nhom9</div>
-                                    <div class="text-muted" style="font-size: 0.75rem;">Vai trò: Admin / Quản lý</div>
+                                    <div class="fw-semibold small"><%: AccountName %></div>
+                                    <div class="text-muted" style="font-size: 0.75rem;"><%: AccountRole %></div>
                                 </li>
                                 <li>
                                     <a class="dropdown-item py-2 small" href="#" data-bs-toggle="modal" data-bs-target="#modalDoiMatKhau">
                                         <i class="bi bi-key me-2 text-primary"></i>Đổi mật khẩu (F03)
                                     </a>
                                 </li>
-                                <li>
+                                <% if (CanAccess("NhanVienTaiKhoan.aspx")) { %><li>
                                     <a class="dropdown-item py-2 small" href="NhanVienTaiKhoan.aspx">
                                         <i class="bi bi-shield-lock me-2 text-primary"></i>Phân quyền hệ thống (F04)
                                     </a>
-                                </li>
+                                </li><% } %>
                                 <li><hr class="dropdown-divider" /></li>
                                 <li>
-                                    <a class="dropdown-item py-2 small text-danger" href="Login.aspx">
-                                        <i class="bi bi-box-arrow-right me-2"></i>Đăng xuất (F02)
-                                    </a>
+                                    <asp:LinkButton runat="server" CssClass="dropdown-item py-2 small text-danger" OnClick="SignOut" CausesValidation="false">Đăng xuất</asp:LinkButton>
                                 </li>
                             </ul>
                         </div>
@@ -142,6 +126,7 @@
 
                 <!-- NỘI DUNG TỪNG TRANG -->
                 <main class="app-content">
+                    <asp:Label ID="passwordMessage" runat="server" CssClass="alert alert-info d-block" Visible="false" role="status" />
                     <asp:ContentPlaceHolder ID="MainContent" runat="server" />
                 </main>
 
@@ -167,25 +152,21 @@
                     </div>
                     <div class="modal-body p-4">
                         <div class="mb-3">
-                            <label class="form-label small fw-semibold">Tên đăng nhập</label>
-                            <input type="text" class="form-control bg-light" placeholder="Nhập tên đăng nhập..." />
-                        </div>
-                        <div class="mb-3">
                             <label class="form-label small fw-semibold">Mật khẩu hiện tại <span class="text-danger">*</span></label>
-                            <input type="password" class="form-control" placeholder="Nhập mật khẩu hiện tại..." />
+                            <input type="password" class="form-control" name="currentPassword" autocomplete="current-password" />
                         </div>
                         <div class="mb-3">
                             <label class="form-label small fw-semibold">Mật khẩu mới <span class="text-danger">*</span></label>
-                            <input type="password" class="form-control" placeholder="Tối thiểu 6 ký tự..." />
+                            <input type="password" class="form-control" name="newPassword" autocomplete="new-password" />
                         </div>
                         <div class="mb-0">
                             <label class="form-label small fw-semibold">Xác nhận mật khẩu mới <span class="text-danger">*</span></label>
-                            <input type="password" class="form-control" placeholder="Nhập lại mật khẩu mới..." />
+                            <input type="password" class="form-control" name="confirmPassword" autocomplete="new-password" />
                         </div>
                     </div>
                     <div class="modal-footer bg-light">
                         <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                        <button type="button" class="btn btn-sm btn-cafe-primary" data-bs-dismiss="modal">Lưu mật khẩu mới</button>
+                        <asp:Button runat="server" CssClass="btn btn-sm btn-primary" Text="Lưu mật khẩu mới" OnClick="ChangePassword" CausesValidation="false" />
                     </div>
                 </div>
             </div>

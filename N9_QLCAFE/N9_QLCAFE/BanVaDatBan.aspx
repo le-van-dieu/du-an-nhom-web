@@ -117,12 +117,12 @@
             <button type="button" class="btn btn-outline-secondary rounded-3" data-bs-toggle="modal" data-bs-target="#modalChuyenBan">
                 <i class="bi bi-arrow-left-right me-1 text-warning"></i>Chuyển bàn (F19)
             </button>
-            <button type="button" class="btn btn-outline-primary rounded-3" data-bs-toggle="modal" data-bs-target="#modalThemBan">
+            <asp:LinkButton runat="server" CssClass="btn btn-outline-primary rounded-3" OnClick="NewTable">
                 <i class="bi bi-plus-square me-1"></i>Thêm bàn (F14)
-            </button>
-            <button type="button" class="btn btn-primary rounded-3 shadow-sm px-3" data-bs-toggle="modal" data-bs-target="#modalTaoDatBan">
+            </asp:LinkButton>
+            <asp:LinkButton runat="server" CssClass="btn btn-primary rounded-3 shadow-sm px-3" OnClick="NewReservation">
                 <i class="bi bi-calendar-plus me-1"></i>Tạo đặt bàn mới (F21)
-            </button>
+            </asp:LinkButton>
         </div>
     </div>
 
@@ -243,7 +243,7 @@
                                                         <%# LayTenTrangThai(Eval("TrangThai").ToString()) %>
                                                     </span>
                                                 </div>
-                                                <h6 class="fw-bold text-dark mb-1"><%# Eval("TenBan") %> <span class="text-muted fw-normal small">(<%# Eval("SoGhe") %> ghế)</span></h6>
+                                                <h6 class="fw-bold text-dark mb-1"><%#: Eval("TenBan") %> <span class="text-muted fw-normal small">(<%# Eval("SoGhe") %> ghế)</span></h6>
                                                 
                                                 <div class="p-2 rounded-3 bg-light my-2">
                                                     <div class="small text-muted"><i class="bi bi-info-circle me-1"></i>Trạng thái: <strong><%# LayTenTrangThai(Eval("TrangThai").ToString()) %></strong></div>
@@ -253,6 +253,7 @@
                                                     <a href='GoiMonThanhToan.aspx?maban=<%# Eval("MaBan") %>' class='btn btn-sm flex-grow-1 fw-semibold <%# Eval("TrangThai").ToString() == "DangPhucVu" ? "btn-primary" : "btn-outline-success" %>'>
                                                         <%# Eval("TrangThai").ToString() == "DangPhucVu" ? "<i class='bi bi-receipt-cutoff me-1'></i>Thu tiền / Thêm" : "<i class='bi bi-plus-circle me-1'></i>Mở gọi món" %>
                                                     </a>
+                                                    <asp:LinkButton runat="server" CssClass="btn btn-sm btn-outline-primary" CommandArgument='<%# Eval("MaBan") %>' OnClick="EditTable">Sửa</asp:LinkButton>
                                                     <asp:LinkButton ID="btnXoaBan" runat="server" CssClass="btn btn-sm btn-outline-danger" 
                                                         CommandArgument='<%# Eval("MaBan") %>' OnClick="btnXoaBan_Click" 
                                                         OnClientClick="return confirm('Bạn có chắc chắn muốn xóa bàn này?');"
@@ -280,10 +281,12 @@
                         <small class="text-muted">Quản lý các lịch đặt từ bảng DATBAN & KHACHHANG</small>
                     </div>
                     <div class="d-flex align-items-center gap-2">
+                        <input class="form-control form-control-sm" name="reservationSearch" aria-label="Tìm lịch đặt bàn" placeholder="Mã phiếu, tên hoặc SĐT" />
+                        <asp:Button runat="server" CssClass="btn btn-sm btn-outline-primary" Text="Tra cứu" OnClick="txtNgayXemLich_TextChanged" />
                         <asp:TextBox ID="txtNgayXemLich" runat="server" TextMode="Date" CssClass="form-control form-control-sm" AutoPostBack="true" OnTextChanged="txtNgayXemLich_TextChanged" style="width: 150px;"></asp:TextBox>
-                        <button type="button" class="btn btn-sm btn-primary rounded-3" data-bs-toggle="modal" data-bs-target="#modalTaoDatBan">
+                        <asp:LinkButton runat="server" CssClass="btn btn-sm btn-primary rounded-3" OnClick="NewReservation">
                             <i class="bi bi-plus-lg me-1"></i>Tạo đặt bàn mới
-                        </button>
+                        </asp:LinkButton>
                     </div>
                 </div>
 
@@ -307,10 +310,14 @@
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Thao Tác" ItemStyle-CssClass="text-end pe-4">
                                 <ItemTemplate>
+                                    <asp:LinkButton runat="server" CssClass="btn btn-sm btn-outline-primary" CommandArgument='<%# Eval("MaDatBan") %>'
+                                        OnClick="ConfirmReservation" Visible='<%# Eval("TrangThaiDat").ToString() == "ChoNhanBan" %>'>Xác nhận</asp:LinkButton>
+                                    <asp:LinkButton runat="server" CssClass="btn btn-sm btn-outline-primary" CommandArgument='<%# Eval("MaDatBan") %>'
+                                        OnClick="EditReservation" Visible='<%# Eval("TrangThaiDat").ToString() == "DaXacNhan" || Eval("TrangThaiDat").ToString() == "ChoNhanBan" %>'>Sửa</asp:LinkButton>
                                     <asp:LinkButton ID="btnNhanBan" runat="server" CssClass="btn btn-sm btn-outline-success py-1 px-2 me-1" CommandArgument='<%# Eval("MaDatBan") %>' OnClick="btnNhanBan_Click" Visible='<%# Eval("TrangThaiDat").ToString() == "DaXacNhan" %>'>
                                         <i class="bi bi-box-arrow-in-right me-1"></i>Nhận bàn
                                     </asp:LinkButton>
-                                    <asp:LinkButton ID="btnHuyDatBan" runat="server" CssClass="btn btn-sm btn-outline-danger py-1 px-2" CommandArgument='<%# Eval("MaDatBan") %>' OnClick="btnHuyDatBan_Click" OnClientClick="return confirm('Bạn có muốn hủy lịch đặt bàn này?');" Visible='<%# Eval("TrangThaiDat").ToString() == "DaXacNhan" %>'>
+                                    <asp:LinkButton ID="btnHuyDatBan" runat="server" CssClass="btn btn-sm btn-outline-danger py-1 px-2" CommandArgument='<%# Eval("MaDatBan") %>' OnClick="btnHuyDatBan_Click" OnClientClick="return confirm('Bạn có muốn hủy lịch đặt bàn này?');" Visible='<%# Eval("TrangThaiDat").ToString() == "DaXacNhan" || Eval("TrangThaiDat").ToString() == "ChoNhanBan" %>'>
                                         <i class="bi bi-x-circle"></i>
                                     </asp:LinkButton>
                                 </ItemTemplate>

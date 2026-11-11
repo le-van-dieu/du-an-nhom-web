@@ -13,6 +13,7 @@ namespace N9_QLCAFE
 
     public partial class NhanVienTaiKhoan
     {
+        protected global::System.Web.UI.WebControls.Label accountMessage;
 
         /// <summary>
         /// btnMoModalThem control.

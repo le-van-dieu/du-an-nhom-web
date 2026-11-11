@@ -2,8 +2,6 @@ using System;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Security.Cryptography;
-using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -323,42 +321,86 @@ namespace N9_QLCAFE
             }
         }
 
-        protected void btnSaveTaiKhoan_Click(object sender, EventArgs e)
+        protected void NewAccount(object sender, EventArgs e)
         {
-            string maNV = ddlNhanVienTaiKhoan.SelectedValue;
-            string username = txtTenDangNhap.Text.Trim();
-            string password = txtMatKhau.Text.Trim();
-            string vaiTro = ddlVaiTro.SelectedValue;
-            byte trangThaiKhoa = byte.Parse(ddlTrangThaiKhoa.SelectedValue);
-
-            string matKhauHash = HashSHA256(password);
-
-            using (SqlConnection conn = new SqlConnection(connString))
-            {
-                string query = @"INSERT INTO taikhoan (TenDangNhap, MatKhauHash, VaiTro, TrangThaiKhoa, NgayTao, MaNhanVien) 
-                                 VALUES (@TenDangNhap, @MatKhauHash, @VaiTro, @TrangThaiKhoa, GETDATE(), @MaNhanVien)";
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@TenDangNhap", username);
-                    cmd.Parameters.AddWithValue("@MatKhauHash", matKhauHash);
-                    cmd.Parameters.AddWithValue("@VaiTro", vaiTro);
-                    cmd.Parameters.AddWithValue("@TrangThaiKhoa", trangThaiKhoa);
-                    cmd.Parameters.AddWithValue("@MaNhanVien", maNV);
-
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                }
-            }
-            LoadDanhSachTaiKhoan();
-            ScriptManager.RegisterStartupScript(this, GetType(), "hideModalTK",
-                "var myModalEl = document.getElementById('modalTaiKhoan'); var modal = bootstrap.Modal.getInstance(myModalEl); if (modal) modal.hide();", true);
+            ViewState.Remove("EditAccount");
+            txtTenDangNhap.Text = "";
+            txtTenDangNhap.ReadOnly = false;
+            ddlVaiTro.SelectedValue = "NhanVien";
+            ddlTrangThaiKhoa.SelectedValue = "0";
+            ScriptManager.RegisterStartupScript(this,GetType(),"newAccount",
+                "new bootstrap.Modal(document.getElementById('modalTaiKhoan')).show();",true);
         }
 
+        protected void EditAccount(object sender, CommandEventArgs e)
+        {
+            string name = (string)e.CommandArgument;
+            var rows = CafeData.Query("SELECT VaiTro,TrangThaiKhoa,MaNhanVien FROM taikhoan WHERE TenDangNhap=@name",
+                CafeData.Arg("@name",name));
+            if (rows.Rows.Count == 0)
+                return;
+            var account = rows.Rows[0];
+            ViewState["EditAccount"] = name;
+            txtTenDangNhap.Text = name;
+            txtTenDangNhap.ReadOnly = true;
+            ddlVaiTro.SelectedValue = (string)account["VaiTro"];
+            ddlTrangThaiKhoa.SelectedValue = account["TrangThaiKhoa"].ToString();
+            string employee = (string)account["MaNhanVien"];
+            if (ddlNhanVienTaiKhoan.Items.FindByValue(employee) == null)
+                ddlNhanVienTaiKhoan.Items.Add(new ListItem(employee, employee));
+            ddlNhanVienTaiKhoan.SelectedValue = employee;
+            ScriptManager.RegisterStartupScript(this,GetType(),"editAccount",
+                "new bootstrap.Modal(document.getElementById('modalTaiKhoan')).show();",true);
+        }
+
+        protected void btnSaveTaiKhoan_Click(object sender, EventArgs e)
+        {
+            string existing = ViewState["EditAccount"] as string;
+            string name = existing ?? txtTenDangNhap.Text.Trim();
+            string password = txtMatKhau.Text;
+            string role = ddlVaiTro.SelectedValue;
+            byte locked = byte.Parse(ddlTrangThaiKhoa.SelectedValue);
+            bool newPassword = password.Length > 0 || existing == null;
+            accountMessage.Visible = true;
+            if (name.Length == 0 || name.Length > 50 || (newPassword && (password.Length < 8 || password.Length > 256))
+                || (name.Equals(User.Identity.Name,StringComparison.OrdinalIgnoreCase) && (locked != 0 || role != "Admin")))
+            {
+                accountMessage.Text = "Kiểm tra tên đăng nhập và mật khẩu. Tài khoản đang dùng phải giữ quyền Admin và ở trạng thái mở.";
+                return;
+            }
+
+            string hash = newPassword ? CafeData.HashPassword(password) : null;
+            try
+            {
+                int changed = CafeData.Execute(existing == null
+                    ? @"INSERT taikhoan (TenDangNhap,MatKhauHash,VaiTro,TrangThaiKhoa,NgayTao,MaNhanVien)
+                        VALUES (@name,@hash,@role,@locked,GETDATE(),@employee)"
+                    : @"UPDATE taikhoan SET MatKhauHash=COALESCE(@hash,MatKhauHash),VaiTro=@role,TrangThaiKhoa=@locked,MaNhanVien=@employee
+                        WHERE TenDangNhap=@name",
+                    CafeData.Arg("@name",name), new SqlParameter("@hash",SqlDbType.VarChar,255) { Value=(object)hash ?? DBNull.Value },
+                    CafeData.Arg("@role",role), CafeData.Arg("@locked",locked), CafeData.Arg("@employee",ddlNhanVienTaiKhoan.SelectedValue));
+                accountMessage.Text = changed == 1 ? "Đã lưu tài khoản." : "Tài khoản đã thay đổi. Vui lòng tải lại.";
+                ViewState.Remove("EditAccount");
+                txtTenDangNhap.ReadOnly = false;
+                txtTenDangNhap.Text = "";
+                LoadDanhSachTaiKhoan();
+            }
+            catch (SqlException ex) when (ex.Number == 2601 || ex.Number == 2627 || ex.Number == 547)
+            {
+                accountMessage.Text = "Tên đăng nhập đã tồn tại hoặc nhân viên không còn hợp lệ.";
+            }
+        }
         protected void btnToggleLock_Command(object sender, CommandEventArgs e)
         {
             if (e.CommandName == "ToggleLock")
             {
                 string tenDangNhap = e.CommandArgument.ToString();
+                if (tenDangNhap.Equals(User.Identity.Name,StringComparison.OrdinalIgnoreCase))
+                {
+                    accountMessage.Visible = true;
+                    accountMessage.Text = "Không thể khóa tài khoản đang đăng nhập.";
+                    return;
+                }
                 using (SqlConnection conn = new SqlConnection(connString))
                 {
                     string query = "UPDATE taikhoan SET TrangThaiKhoa = CASE WHEN TrangThaiKhoa = 0 THEN 1 ELSE 0 END WHERE TenDangNhap = @TenDangNhap";
@@ -506,18 +548,5 @@ namespace N9_QLCAFE
             LoadDanhSachNhanVien(keyword, maCV);
         }
 
-        private string HashSHA256(string rawData)
-        {
-            using (SHA256 sha256Hash = SHA256.Create())
-            {
-                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
-                StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < bytes.Length; i++)
-                {
-                    builder.Append(bytes[i].ToString("x2"));
-                }
-                return builder.ToString();
-            }
-        }
     }
 }

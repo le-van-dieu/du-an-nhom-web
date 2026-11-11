@@ -33,3 +33,6 @@ bld/
 **/[Pp]ackages/*
 !**/[Pp]ackages/build/
 !**/[Pp]ackages/repositories.config
+
+# Local issue reports
+/N9_QLCAFE/N9_QLCAFE/App_Data/Issues/

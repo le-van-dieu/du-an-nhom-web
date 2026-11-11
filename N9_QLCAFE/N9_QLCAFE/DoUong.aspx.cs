@@ -13,6 +13,7 @@ namespace N9_QLCAFE
 {
     public partial class DoUong : System.Web.UI.Page
     {
+        protected bool CanManageMenu => ((SiteMaster)Master).CanManageBusiness;
         private string ChuoiKetNoi
         {
             get
@@ -74,6 +75,7 @@ namespace N9_QLCAFE
 
         protected void btnLuuDoUong_Click(object sender, EventArgs e)
         {
+            if (!CanManageMenu) throw new System.Web.HttpException(403, "Bạn chỉ có quyền xem menu.");
             string maDoUong = txtMaDoUong.Text.Trim();
             string tenDoUong = txtTenDoUong.Text.Trim();
             string maDanhMuc = ddlDanhMucForm.SelectedValue;
@@ -378,6 +380,7 @@ namespace N9_QLCAFE
 
         protected void rpDoUong_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
+            if (!CanManageMenu) throw new System.Web.HttpException(403, "Bạn chỉ có quyền xem menu.");
             string maDoUong = e.CommandArgument.ToString();
 
             if (e.CommandName == "Sua")
@@ -458,73 +461,26 @@ namespace N9_QLCAFE
         {
             try
             {
-                using (SqlConnection conn = new SqlConnection(ChuoiKetNoi))
+                int changed = CafeData.Execute(@"UPDATE dbo.douong SET TrangThaiKinhDoanh='NgungKinhDoanh'
+                    WHERE MaDoUong=@code", new SqlParameter("@code", SqlDbType.VarChar, 20) { Value = maDoUong });
+                if (changed == 0)
                 {
-                    conn.Open();
-
-                    using (SqlTransaction tran = conn.BeginTransaction())
-                    {
-                        try
-                        {
-                            string sqlKiemTra = @"
-                                SELECT COUNT(*)
-                                FROM dbo.chitietdonhang
-                                WHERE MaDoUong = @MaDoUong";
-
-                            int soGiaoDich;
-
-                            using (SqlCommand cmd = new SqlCommand(sqlKiemTra, conn, tran))
-                            {
-                                cmd.Parameters.Add("@MaDoUong", SqlDbType.VarChar, 20).Value = maDoUong;
-                                soGiaoDich = Convert.ToInt32(cmd.ExecuteScalar());
-                            }
-
-                            if (soGiaoDich > 0)
-                            {
-                                string sqlCapNhat = @"
-                                    UPDATE dbo.douong
-                                    SET TrangThaiKinhDoanh = 'NgungKinhDoanh'
-                                    WHERE MaDoUong = @MaDoUong";
-
-                                using (SqlCommand cmd = new SqlCommand(sqlCapNhat, conn, tran))
-                                {
-                                    cmd.Parameters.Add("@MaDoUong", SqlDbType.VarChar, 20).Value = maDoUong;
-                                    cmd.ExecuteNonQuery();
-                                }
-                            }
-                            else
-                            {
-                                string sqlXoa = "DELETE FROM dbo.douong WHERE MaDoUong = @MaDoUong";
-
-                                using (SqlCommand cmd = new SqlCommand(sqlXoa, conn, tran))
-                                {
-                                    cmd.Parameters.Add("@MaDoUong", SqlDbType.VarChar, 20).Value = maDoUong;
-                                    cmd.ExecuteNonQuery();
-                                }
-                            }
-
-                            tran.Commit();
-                        }
-                        catch
-                        {
-                            tran.Rollback();
-                            throw;
-                        }
-                    }
+                    ThongBao("Không tìm thấy đồ uống.");
+                    return;
                 }
 
                 LamMoiDanhSach();
-
-                ThongBao("Xử lý đồ uống thành công!");
+                ThongBao("Đã chuyển đồ uống sang Ngừng kinh doanh.");
             }
-            catch (Exception ex)
+            catch (SqlException ex)
             {
-                ThongBao("Không thể xóa đồ uống: " + ex.Message);
+                ThongBao("Không thể xử lý đồ uống: " + ex.Message);
             }
         }
 
         protected void rpDanhMuc_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
+            if (!CanManageMenu) throw new System.Web.HttpException(403, "Bạn chỉ có quyền xem menu.");
             int maDanhMuc = Convert.ToInt32(e.CommandArgument);
 
             if (e.CommandName == "SuaDanhMuc")
@@ -575,6 +531,7 @@ namespace N9_QLCAFE
 
         protected void btnLuuDanhMuc_Click(object sender, EventArgs e)
         {
+            if (!CanManageMenu) throw new System.Web.HttpException(403, "Bạn chỉ có quyền xem menu.");
             string tenDanhMuc = txtTenDanhMuc.Text.Trim();
 
             if (tenDanhMuc == "")

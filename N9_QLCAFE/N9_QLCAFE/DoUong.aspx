@@ -12,19 +12,19 @@
             <h4 class="fw-bold mb-0 text-dark">Quản lý Đồ uống & Danh mục Menu</h4>
         </div>
         <div class="d-flex gap-2">
-            <button type="button" class="btn btn-cafe-outline"
+            <% if (CanManageMenu) { %><button type="button" class="btn btn-cafe-outline"
                 data-bs-toggle="modal"
                 data-bs-target="#modalDanhMuc"
                 onclick="moThemDanhMuc();">
                 <i class="bi bi-folder-plus me-1"></i>Quản lý Danh mục (F10)
-            </button>
+            </button><% } %>
 
-            <button type="button" class="btn btn-cafe-primary"
+            <% if (CanManageMenu) { %><button type="button" class="btn btn-cafe-primary"
                 data-bs-toggle="modal"
                 data-bs-target="#modalThemDoUong"
                 onclick="moFormThemDoUong();">
                 <i class="bi bi-plus-lg me-1"></i>Thêm đồ uống mới (F06)
-            </button>
+            </button><% } %>
         </div>
     </div>
 
@@ -270,7 +270,7 @@
                                         </td>
 
                                         <td class="text-end">
-                                            <asp:LinkButton ID="btnSua" runat="server"
+                                            <asp:LinkButton ID="btnSua" runat="server" Visible="<%# CanManageMenu %>"
                                                 CssClass="btn btn-sm btn-cafe-outline me-1"
                                                 CommandName="Sua"
                                                 CommandArgument='<%# Eval("MaDoUong") %>'
@@ -278,7 +278,7 @@
                                                 <i class="bi bi-pencil-square"></i> Chỉnh sửa
                                             </asp:LinkButton>
 
-                                            <asp:LinkButton ID="btnXoa" runat="server"
+                                            <asp:LinkButton ID="btnXoa" runat="server" Visible="<%# CanManageMenu %>"
                                                 CssClass="btn btn-sm btn-outline-danger"
                                                 CommandName="Xoa"
                                                 CommandArgument='<%# Eval("MaDoUong") %>'

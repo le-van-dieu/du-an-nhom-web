@@ -14,9 +14,9 @@
             <button type="button" class="btn btn-cafe-outline" data-bs-toggle="modal" data-bs-target="#modalChucVu">
                 <i class="bi bi-briefcase me-1"></i>Quản lý Chức vụ (F49)
             </button>
-            <button type="button" class="btn btn-cafe-outline" data-bs-toggle="modal" data-bs-target="#modalTaiKhoan">
+            <asp:LinkButton runat="server" CssClass="btn btn-cafe-outline" OnClick="NewAccount">
                 <i class="bi bi-person-lock me-1"></i>Tạo Tài khoản (F05, F50)
-            </button>
+            </asp:LinkButton>
             <asp:LinkButton ID="btnMoModalThem" runat="server" CssClass="btn btn-cafe-primary" OnClick="btnMoModalThem_Click">
                 <i class="bi bi-person-plus-fill me-1"></i>Thêm Nhân viên mới (F45)
             </asp:LinkButton>
@@ -137,9 +137,9 @@
                                 <h6 class="fw-bold mb-0 text-dark">Danh sách Tài khoản Hệ thống (F05, F50)</h6>
                                 <small class="text-muted">Mỗi nhân viên chỉ liên kết với tài khoản phù hợp • Mật khẩu mã hóa (NF02)</small>
                             </div>
-                            <button type="button" class="btn btn-sm btn-cafe-primary" data-bs-toggle="modal" data-bs-target="#modalTaiKhoan">
+                            <asp:LinkButton runat="server" CssClass="btn btn-sm btn-cafe-primary" OnClick="NewAccount">
                                 <i class="bi bi-plus-lg"></i> Cấp tài khoản
-                            </button>
+                            </asp:LinkButton>
                         </div>
                         <div class="table-responsive">
                             <table class="table table-cafe">
@@ -163,6 +163,8 @@
                                                     <%# Convert.ToInt32(Eval("TrangThaiKhoa")) == 0 ? "<span class='badge bg-success'>Hoạt động</span>" : "<span class='badge bg-danger'>Đã khóa</span>" %>
                                                 </td>
                                                 <td class="text-end">
+                                                    <asp:LinkButton runat="server" CssClass="btn btn-sm text-primary py-0"
+                                                        CommandArgument='<%# Eval("TenDangNhap") %>' OnCommand="EditAccount">Sửa</asp:LinkButton>
                                                     <asp:LinkButton ID="btnToggleLock" runat="server" CssClass="btn btn-sm text-danger py-0" 
                                                                     CommandName="ToggleLock" CommandArgument='<%# Eval("TenDangNhap") %>' 
                                                                     OnCommand="btnToggleLock_Command" title="Khóa/Mở khóa">
@@ -194,12 +196,12 @@
                                         <th class="text-start">Phân hệ Nghiệp vụ</th>
                                         <th>Admin</th>
                                         <th>Quản lý</th>
-                                        <th>Nhân viên</th>
+                                        <th>Nhân viên / Thu ngân</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td class="text-start fw-semibold">Quản lý Tài khoản & Phân quyền (F04, F05)</td>
+                                        <td class="text-start fw-semibold">Nhân sự, tài khoản & phân quyền</td>
                                         <td><i class="bi bi-check-circle-fill text-primary"></i></td>
                                         <td><i class="bi bi-dash-circle text-muted"></i></td>
                                         <td><i class="bi bi-dash-circle text-muted"></i></td>
@@ -229,7 +231,7 @@
                                         <td><i class="bi bi-dash-circle text-muted"></i></td>
                                     </tr>
                                     <tr>
-                                        <td class="text-start fw-semibold">Quản lý Nhân sự & Doanh thu (F45 - F58)</td>
+                                        <td class="text-start fw-semibold">Thống kê Doanh thu (F51 - F58)</td>
                                         <td><i class="bi bi-check-circle-fill text-primary"></i></td>
                                         <td><i class="bi bi-check-circle-fill text-primary"></i></td>
                                         <td><i class="bi bi-dash-circle text-muted"></i></td>
@@ -311,6 +313,7 @@
     </div>
 
     <!-- MODAL TẠO / SỬA TÀI KHOẢN & GẮN NHÂN VIÊN (F04, F05, F50) -->
+    <asp:Label ID="accountMessage" runat="server" Visible="false" CssClass="alert alert-info d-block" role="status" />
     <div class="modal fade" id="modalTaiKhoan" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow">
@@ -329,13 +332,14 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label small fw-semibold">Mật khẩu khởi tạo / Đặt lại (NF02)</label>
-                        <asp:TextBox ID="txtMatKhau" runat="server" TextMode="Password" CssClass="form-control" Text="123456" />
+                        <asp:TextBox ID="txtMatKhau" runat="server" TextMode="Password" CssClass="form-control" autocomplete="new-password" placeholder="Tối thiểu 8 ký tự" />
                     </div>
                     <div class="row g-2">
                         <div class="col-6">
                             <label class="form-label small fw-semibold">Vai trò Phân quyền (F04)</label>
                             <asp:DropDownList ID="ddlVaiTro" runat="server" CssClass="form-select">
                                 <asp:ListItem Text="Admin" Value="Admin" />
+                                <asp:ListItem Text="Quản lý" Value="QuanLy" />
                                 <asp:ListItem Text="ThuNgan" Value="ThuNgan" />
                                 <asp:ListItem Text="NhanVien" Value="NhanVien" />
                             </asp:DropDownList>
