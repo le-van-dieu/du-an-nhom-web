@@ -41,11 +41,11 @@ Theo tài liệu đặc tả **Nhóm 9.docx** (Mục 5):
    - Modal Thêm/Sửa bàn (`F14`, `F15`), Chuyển bàn (`F19`), Khu vực (`F17`).
    - Tab Quản lý & Lịch đặt bàn trước (`F21`, `F22`, `F24`, `F25`, `F26`), trạng thái No-show / hủy (`F23`).
 5. **Gọi món (POS) & Thanh toán Hóa đơn:** `GoiMonThanhToan.aspx`
-   - Quầy POS 2 cột: Cột chọn món nhanh từ menu (`F28`, `F29`) và Cột đơn hàng bàn hiện tại (`F27`).
+   - Quầy POS 2 cột với menu có ảnh và đơn của bàn đang chọn. Chạm món để thêm một ly, tìm món theo tên hoặc danh mục (`F28`, `F29`).
    - Chỉnh số lượng (`F30`), xóa món (`F31`), ghi chú món ít đá/ít đường (`F32`), tạm tính (`F33`), giảm giá (`F38`).
-   - Chọn phương thức thanh toán Tiền mặt (`F39`) / Chuyển khoản QR (`F40`).
-   - Tab Tra cứu & Lịch sử hóa đơn giao dịch (`F43`, `F44`).
-   - Modal In và xác nhận thanh toán hóa đơn (`F36`, `F41`, `F42`).
+   - Chọn phương thức Tiền mặt (`F39`) hoặc Chuyển khoản (`F40`). Màn hình kiểm tra thanh toán hiển thị tiền món, giảm giá thành viên, giảm thêm và số tiền cần thu.
+   - Tra cứu lịch sử hóa đơn theo mã hoặc ngày (`F43`, `F44`).
+   - Xác nhận đã nhận tiền để lưu hóa đơn, trả bàn về trống và mở hóa đơn để in (`F36`, `F41`, `F42`).
 6. **Nhân viên & Tài khoản Phân quyền:** `NhanVienTaiKhoan.aspx`
    - Danh sách hồ sơ nhân viên (`F45`, `F46`, `F47`, `F48`).
    - Quản lý chức vụ làm việc (`F49`), liên kết tài khoản (`F50`).
@@ -90,6 +90,14 @@ USE quanlyquancafe;
 SELECT TenDangNhap, MatKhau, VaiTro, TrangThaiKhoa
 FROM dbo.taikhoan;
 ```
+
+Luồng bán hàng được thực hiện như sau.
+
+1. Vào **Bàn & Đặt chỗ**, nhấn **Mở bàn & gọi món** trên bàn trống. Với bàn đang phục vụ, nhấn **Xem đơn / Gọi thêm** để tiếp tục đơn hiện tại. Trong màn hình **Bán hàng (POS)** cũng có thể chọn bàn trực tiếp.
+2. Chạm vào ảnh món để thêm một ly. Sửa số lượng hoặc ghi chú và nhấn **Lưu** trên dòng món.
+3. Nhấn **Thanh toán**, kiểm tra các khoản giảm và số tiền cần thu. Khi thu tiền mặt, có thể nhập tiền khách đưa để tính tiền thối.
+4. Sau khi nhận đủ tiền, nhấn **Đã nhận tiền · Hoàn tất**. Hóa đơn được lưu vào lịch sử và bàn trở về trống.
+5. Nếu mở nhầm bàn và đơn còn trống, nhấn **Đóng bàn trống**. Với khách đặt trước, mở lịch đặt để **Xác nhận** và **Nhận bàn** trước khi gọi món.
 
 ---
 

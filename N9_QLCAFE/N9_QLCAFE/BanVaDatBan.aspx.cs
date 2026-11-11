@@ -17,6 +17,14 @@ namespace N9_QLCAFE
             if (!IsPostBack)
             {
                 txtNgayXemLich.Text = DateTime.Now.ToString("yyyy-MM-dd");
+                int reservation;
+                if (int.TryParse(Request.QueryString["datban"], out reservation))
+                {
+                    var dates = CafeData.Query("SELECT NgayGioDenDuKien FROM datban WHERE MaDatBan=@id",CafeData.Arg("@id",reservation));
+                    if (dates.Rows.Count > 0)
+                        txtNgayXemLich.Text = ((DateTime)dates.Rows[0][0]).ToString("yyyy-MM-dd");
+                    ShowReservationTab();
+                }
                 txtNgayDenDat.Text = DateTime.Now.AddHours(1).ToString("yyyy-MM-dd");
                 txtGioDenDat.Text = DateTime.Now.AddHours(1).ToString("HH:mm");
 
@@ -57,14 +65,14 @@ namespace N9_QLCAFE
                     }
 
                     // Bàn trống
-                    using (SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM banan WHERE TrangThai = 'Trong'", conn))
+                    using (SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM banan b WHERE b.TrangThai='Trong' AND NOT EXISTS (SELECT 1 FROM donhang d WHERE d.MaBan=b.MaBan AND d.TrangThaiDon='DangPhucVu') AND NOT EXISTS (SELECT 1 FROM datban r WHERE r.MaBan=b.MaBan AND r.TrangThaiDat='DaXacNhan' AND r.NgayGioDenDuKien BETWEEN GETDATE() AND DATEADD(hour,2,GETDATE()))", conn))
                     {
                         object objBanTrong = cmd.ExecuteScalar();
                         litBanTrong.Text = (objBanTrong != null) ? objBanTrong.ToString() : "0";
                     }
 
                     // Bàn đang phục vụ
-                    using (SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM banan WHERE TrangThai = 'DangPhucVu'", conn))
+                    using (SqlCommand cmd = new SqlCommand("SELECT COUNT(*) FROM banan b WHERE b.TrangThai='DangPhucVu' OR EXISTS (SELECT 1 FROM donhang d WHERE d.MaBan=b.MaBan AND d.TrangThaiDon='DangPhucVu')", conn))
                     {
                         object objBanDung = cmd.ExecuteScalar();
                         litBanDangDung.Text = (objBanDung != null) ? objBanDung.ToString() : "0";
@@ -123,7 +131,18 @@ namespace N9_QLCAFE
                 if (hfMaKV != null && rptBanAn != null)
                 {
                     string maKV = hfMaKV.Value;
-                    string sqlBan = "SELECT MaBan, TenBan, SoGhe, TrangThai FROM banan WHERE MaKhuVuc = @MaKhuVuc";
+                    string sqlBan = @"SELECT * FROM (
+                        SELECT b.MaBan,b.TenBan,b.SoGhe,
+                        CASE WHEN EXISTS (SELECT 1 FROM donhang d WHERE d.MaBan=b.MaBan AND d.TrangThaiDon='DangPhucVu')
+                            THEN 'DangPhucVu'
+                            WHEN EXISTS (SELECT 1 FROM datban r WHERE r.MaBan=b.MaBan AND r.TrangThaiDat='DaXacNhan'
+                                AND r.NgayGioDenDuKien BETWEEN GETDATE() AND DATEADD(hour,2,GETDATE()))
+                            THEN 'DaDat' ELSE b.TrangThai END AS TrangThai,
+                        ISNULL((SELECT SUM(c.ThanhTien) FROM donhang d JOIN chitietdonhang c ON c.MaDonHang=d.MaDonHang
+                            WHERE d.MaBan=b.MaBan AND d.TrangThaiDon='DangPhucVu'),0) AS TienTamTinh,
+                        (SELECT TOP 1 r.MaDatBan FROM datban r WHERE r.MaBan=b.MaBan
+                            AND r.TrangThaiDat IN ('ChoNhanBan','DaXacNhan') ORDER BY r.NgayGioDenDuKien) AS MaDatBan
+                        FROM banan b WHERE b.MaKhuVuc=@MaKhuVuc) AS available WHERE 1=1";
 
                     sqlBan += @" AND (@state='' OR TrangThai=@state)
                         AND (@keyword='' OR TenBan LIKE N'%'+@keyword+N'%'
@@ -166,7 +185,7 @@ namespace N9_QLCAFE
                     using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
                         cmd.Parameters.AddWithValue("@Ngay", txtNgayXemLich.Text);
-                        cmd.Parameters.AddWithValue("@Search", (Request.Form["reservationSearch"] ?? "").Trim());
+                        cmd.Parameters.AddWithValue("@Search", (Request.Form["reservationSearch"] ?? Request.QueryString["datban"] ?? "").Trim());
                         using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                         {
                             DataTable dt = new DataTable();
@@ -478,6 +497,20 @@ namespace N9_QLCAFE
             }
         }
 
+        protected void OpenTable(object sender, EventArgs e)
+        {
+            int table = int.Parse(((LinkButton)sender).CommandArgument);
+            try
+            {
+                string order = CafeData.OpenTableOrder(table, (string)Session["MaNhanVien"]);
+                Response.Redirect("GoiMonThanhToan.aspx?don=" + order);
+            }
+            catch (SqlException ex) when (ex.Number == 50001 || ex.Number == 1205)
+            {
+                HienThongBao(ex.Number == 1205 ? "Bàn đang được cập nhật. Vui lòng thử lại." : ex.Message, false);
+                TaiDuLieuTrang();
+            }
+        }
         protected void NewReservation(object sender, EventArgs e)
         {
             ViewState.Remove("EditReservation");
@@ -492,6 +525,7 @@ namespace N9_QLCAFE
         protected void NewTable(object sender, EventArgs e)
         {
             ViewState.Remove("EditTable");
+            btnLuuBanMoi.Text = "Thêm bàn";
             txtTenBanMoi.Text = txtSoGheMoi.Text = "";
             OpenModal("modalThemBan");
         }
@@ -526,6 +560,7 @@ namespace N9_QLCAFE
             if (rows.Rows.Count == 0)
                 return;
             ViewState["EditTable"] = id;
+            btnLuuBanMoi.Text = "Lưu thay đổi";
             txtTenBanMoi.Text = (string)rows.Rows[0]["TenBan"];
             txtSoGheMoi.Text = rows.Rows[0]["SoGhe"].ToString();
             ddlKhuVucThemBan.SelectedValue = rows.Rows[0]["MaKhuVuc"].ToString();
@@ -575,6 +610,17 @@ namespace N9_QLCAFE
         }
 
         // 13. TIỆN ÍCH ĐỊNH DẠNG TRẠNG THÁI HIỂN THỊ
+        public string ReservationStatus(object value)
+        {
+            switch (Convert.ToString(value))
+            {
+                case "ChoNhanBan": return "Chờ xác nhận";
+                case "DaXacNhan": return "Đã xác nhận";
+                case "DaNhanBan": return "Đã nhận bàn";
+                case "DaHuy": return "Đã hủy";
+                default: return "Chờ xử lý";
+            }
+        }
         public string LayClassTrangThai(string trangThai)
         {
             if (trangThai == "DangPhucVu") return "table-state-occupied";

@@ -197,7 +197,7 @@
             <div class="d-flex flex-wrap align-items-center gap-2">
                 <div class="input-group" style="width: 230px;">
                     <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-search"></i></span>
-                    <asp:TextBox ID="txtTimKiem" runat="server" CssClass="form-control form-control-sm border-start-0" placeholder="Tìm tên bàn..."></asp:TextBox>
+                    <asp:TextBox ID="txtTimKiem" runat="server" CssClass="form-control form-control-sm border-start-0" placeholder="Tìm tên hoặc mã bàn..."></asp:TextBox>
                 </div>
                 <asp:DropDownList ID="ddlLocKhuVuc" runat="server" CssClass="form-select form-select-sm" AutoPostBack="true" OnSelectedIndexChanged="ddlLoc_SelectedIndexChanged" style="width: 170px;">
                 </asp:DropDownList>
@@ -246,13 +246,17 @@
                                                 <h6 class="fw-bold text-dark mb-1"><%#: Eval("TenBan") %> <span class="text-muted fw-normal small">(<%# Eval("SoGhe") %> ghế)</span></h6>
                                                 
                                                 <div class="p-2 rounded-3 bg-light my-2">
-                                                    <div class="small text-muted"><i class="bi bi-info-circle me-1"></i>Trạng thái: <strong><%# LayTenTrangThai(Eval("TrangThai").ToString()) %></strong></div>
+                                                    <div class="small text-muted"><%# Eval("TrangThai").ToString() == "DangPhucVu" ? string.Format("Tạm tính {0:N0} đ", Eval("TienTamTinh")) : (Eval("TrangThai").ToString() == "DaDat" ? "Có khách đặt bàn" : "Sẵn sàng đón khách") %></div>
                                                 </div>
 
                                                 <div class="d-flex gap-1 pt-2 border-top">
-                                                    <a href='GoiMonThanhToan.aspx?maban=<%# Eval("MaBan") %>' class='btn btn-sm flex-grow-1 fw-semibold <%# Eval("TrangThai").ToString() == "DangPhucVu" ? "btn-primary" : "btn-outline-success" %>'>
-                                                        <%# Eval("TrangThai").ToString() == "DangPhucVu" ? "<i class='bi bi-receipt-cutoff me-1'></i>Thu tiền / Thêm" : "<i class='bi bi-plus-circle me-1'></i>Mở gọi món" %>
-                                                    </a>
+                                                    <asp:LinkButton runat="server" CommandArgument='<%# Eval("MaBan") %>' OnClick="OpenTable"
+                                                        CssClass="btn btn-sm btn-primary flex-grow-1"
+                                                        Visible='<%# Eval("TrangThai").ToString() != "DaDat" %>'>
+                                                        <%# Eval("TrangThai").ToString() == "DangPhucVu" ? "Xem đơn / Gọi thêm" : "Mở bàn & gọi món" %>
+                                                    </asp:LinkButton>
+                                                    <a href='BanVaDatBan.aspx?datban=<%# Eval("MaDatBan") %>' class="btn btn-sm btn-outline-primary"
+                                                        <%# Eval("TrangThai").ToString() == "DaDat" ? "" : "hidden" %>>Xem lịch đặt</a>
                                                     <asp:LinkButton runat="server" CssClass="btn btn-sm btn-outline-primary" CommandArgument='<%# Eval("MaBan") %>' OnClick="EditTable">Sửa</asp:LinkButton>
                                                     <asp:LinkButton ID="btnXoaBan" runat="server" CssClass="btn btn-sm btn-outline-danger" 
                                                         CommandArgument='<%# Eval("MaBan") %>' OnClick="btnXoaBan_Click" 
@@ -304,7 +308,7 @@
                             <asp:TemplateField HeaderText="Trạng Thái">
                                 <ItemTemplate>
                                     <span class='badge <%# Eval("TrangThaiDat").ToString() == "DaNhanBan" ? "bg-success" : (Eval("TrangThaiDat").ToString() == "DaHuy" ? "bg-danger" : "badge-soft-reserved") %> rounded-pill'>
-                                        <%# Eval("TrangThaiDat") %>
+                                        <%#: ReservationStatus(Eval("TrangThaiDat")) %>
                                     </span>
                                 </ItemTemplate>
                             </asp:TemplateField>

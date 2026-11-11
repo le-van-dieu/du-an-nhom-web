@@ -11,6 +11,7 @@ namespace N9_QLCAFE
 {
     public partial class GoiMonThanhToan : Page
     {
+        private bool preserveLineEdits;
         protected bool CanDiscount => ((SiteMaster)Master).CanManageBusiness;
 
         private const string ReadLines = @"SELECT c.MaDoUong,d.TenDoUong,c.SoLuong,c.DonGiaTaiThoiDiemGoi,
@@ -36,19 +37,24 @@ namespace N9_QLCAFE
                 }
                 LoadOrders(selected);
                 if (table > 0 && tables.Items.FindByValue(table.ToString()) != null)
+                {
                     tables.SelectedValue = table.ToString();
+                    openSelected.Visible = selected == null;
+                }
                 SearchInvoices(this, EventArgs.Empty);
             }
         }
 
         private void LoadOrders(string selected)
         {
-            Bind(tables, Query(@"SELECT b.MaBan,k.TenKhuVuc+N' · '+b.TenBan AS TenBan
+            Bind(tables, Query(@"SELECT b.MaBan,k.TenKhuVuc+N' · '+b.TenBan+
+                CASE WHEN EXISTS (SELECT 1 FROM donhang d WHERE d.MaBan=b.MaBan AND d.TrangThaiDon='DangPhucVu')
+                    OR b.TrangThai='DangPhucVu' THEN N' — Đang phục vụ' ELSE N' — Trống' END AS TenBan
                 FROM banan b JOIN khuvuc k ON k.MaKhuVuc=b.MaKhuVuc
                 WHERE b.TrangThai IN ('Trong','DangPhucVu')
-                AND NOT EXISTS (SELECT 1 FROM datban r WHERE r.MaBan=b.MaBan AND r.TrangThaiDat='DaXacNhan'
-                    AND r.NgayGioDenDuKien BETWEEN GETDATE() AND DATEADD(hour,2,GETDATE()))
-                AND NOT EXISTS (SELECT 1 FROM donhang d WHERE d.MaBan=b.MaBan AND d.TrangThaiDon='DangPhucVu')
+                AND (b.TrangThai='DangPhucVu' OR NOT EXISTS
+                    (SELECT 1 FROM datban r WHERE r.MaBan=b.MaBan AND r.TrangThaiDat='DaXacNhan'
+                    AND r.NgayGioDenDuKien BETWEEN GETDATE() AND DATEADD(hour,2,GETDATE())))
                 ORDER BY k.TenKhuVuc,b.TenBan"), "MaBan", "TenBan", "Chọn bàn");
             Bind(orders, Query(@"SELECT d.MaDonHang,d.MaDonHang+N' · '+ISNULL(b.TenBan,N'Mang đi') AS TenDon
                 FROM donhang d LEFT JOIN banan b ON b.MaBan=d.MaBan WHERE d.TrangThaiDon='DangPhucVu'
@@ -57,7 +63,10 @@ namespace N9_QLCAFE
                 FROM douong WHERE TrangThaiKinhDoanh='ConHang' ORDER BY TenDoUong"), "MaDoUong", "TenMon", "Chọn món");
             if (selected != null && orders.Items.FindByValue(selected) != null)
                 orders.SelectedValue = selected;
-            SelectOrder(this, EventArgs.Empty);
+            menu.DataSource = Query(@"SELECT d.MaDoUong,d.TenDoUong,d.GiaBanHienTai,d.HinhAnh,c.TenDanhMuc
+                FROM douong d JOIN danhmuc c ON c.MaDanhMuc=d.MaDanhMuc
+                WHERE d.TrangThaiKinhDoanh='ConHang' ORDER BY c.TenDanhMuc,d.TenDoUong");
+            menu.DataBind();
         }
 
         private static void Bind(DropDownList list, DataTable rows, string value, string label, string placeholder)
@@ -71,50 +80,55 @@ namespace N9_QLCAFE
 
         protected void SelectOrder(object sender, EventArgs e)
         {
+            var active = Query(@"SELECT d.MaDonHang,d.MaBan,d.ThoiGianTao,ISNULL(b.TenBan,N'Mang đi') AS TenBan
+                FROM donhang d LEFT JOIN banan b ON b.MaBan=d.MaBan
+                WHERE d.MaDonHang=@id AND d.TrangThaiDon='DangPhucVu'", Arg("@id", orders.SelectedValue));
+            bool selected = active.Rows.Count == 1;
+            servicePanel.Visible = selected;
+            emptyOrder.Visible = !selected;
+            if (!selected)
+                return;
+            openSelected.Visible = false;
+
+            var order = active.Rows[0];
+            tableTitle.Text = Server.HtmlEncode((string)order["TenBan"]);
+            orderCaption.Text = string.Format("Mở lúc {0:HH:mm dd/MM/yyyy}", order["ThoiGianTao"]);
+            string table = Convert.ToString(order["MaBan"]);
+            if (tables.Items.FindByValue(table) != null)
+                tables.SelectedValue = table;
             var rows = Query(ReadLines, Arg("@id", orders.SelectedValue));
-            lines.DataSource = rows;
-            lines.DataBind();
+            if (!preserveLineEdits)
+            {
+                lines.DataSource = rows;
+                lines.DataBind();
+            }
             total.Text = rows.AsEnumerable().Sum(row => row.Field<decimal>("ThanhTien")).ToString("N0") + " đ";
+            checkout.Enabled = rows.Rows.Count > 0;
+            cancelEmpty.Visible = rows.Rows.Count == 0;
         }
 
         protected void CreateOrder(object sender, EventArgs e)
         {
+            if (HasPendingLineEdits())
+            {
+                Show("Nhấn Lưu ở dòng món vừa sửa trước khi chuyển bàn.");
+                return;
+            }
             int table;
             if (!int.TryParse(tables.SelectedValue, out table))
             {
-                Show("Hãy chọn bàn.");
+                Response.Redirect("GoiMonThanhToan.aspx");
                 return;
             }
-            string id = NewCode("DH");
             Run(delegate
             {
-                Execute(@"SET XACT_ABORT ON; BEGIN TRAN;
-                    IF NOT EXISTS (SELECT 1 FROM banan WITH (UPDLOCK,HOLDLOCK)
-                        WHERE MaBan=@table AND TrangThai IN ('Trong','DangPhucVu'))
-                        THROW 50001,N'Bàn không còn khả dụng.',1;
-                    IF EXISTS (SELECT 1 FROM datban WHERE MaBan=@table AND TrangThaiDat='DaXacNhan'
-                        AND NgayGioDenDuKien BETWEEN GETDATE() AND DATEADD(hour,2,GETDATE()))
-                        THROW 50001,N'Bàn sắp có khách đặt.',1;
-                    IF EXISTS (SELECT 1 FROM donhang WITH (UPDLOCK,HOLDLOCK)
-                        WHERE MaBan=@table AND TrangThaiDon='DangPhucVu')
-                        THROW 50001,N'Bàn đã có đơn đang phục vụ.',1;
-                    INSERT donhang (MaDonHang,ThoiGianTao,LoaiDon,TrangThaiDon,MaBan,MaNhanVienTao)
-                    VALUES (@id,GETDATE(),'TaiCho','DangPhucVu',@table,@employee);
-                    UPDATE banan SET TrangThai='DangPhucVu' WHERE MaBan=@table;
-                    COMMIT;", Arg("@table", table), Arg("@id", id), Arg("@employee", Session["MaNhanVien"]));
+                string id = OpenTableOrder(table, (string)Session["MaNhanVien"]);
                 Response.Redirect("GoiMonThanhToan.aspx?don=" + id);
             });
         }
 
-        protected void AddDrink(object sender, EventArgs e)
+        private void SaveDrink(string drink, int quantity, string note)
         {
-            int quantity;
-            string note = Request.Form["note"] ?? "";
-            if (orders.SelectedValue == "" || drinks.SelectedValue == "" || !ValidQuantity(Request.Form["quantity"], out quantity) || note.Length > 255)
-            {
-                Show("Chọn đơn và món. Số lượng phải từ 1 đến 999.");
-                return;
-            }
             Run(delegate
             {
                 Execute(@"SET XACT_ABORT ON; BEGIN TRAN;
@@ -129,7 +143,7 @@ namespace N9_QLCAFE
                         GhiChuMon=COALESCE(NULLIF(@note,N''),GhiChuMon) WHERE MaDonHang=@id AND MaDoUong=@drink;
                     IF @@ROWCOUNT=0 INSERT chitietdonhang (MaDonHang,MaDoUong,SoLuong,DonGiaTaiThoiDiemGoi,GhiChuMon,ThanhTien)
                         VALUES (@id,@drink,@qty,@price,@note,@price*@qty);
-                    COMMIT;", Arg("@id", orders.SelectedValue), Arg("@drink", drinks.SelectedValue), Arg("@qty", quantity), Arg("@note", note));
+                    COMMIT;", Arg("@id", orders.SelectedValue), Arg("@drink", drink), Arg("@qty", quantity), Arg("@note", note));
                 SelectOrder(this, EventArgs.Empty);
             });
         }
@@ -152,25 +166,40 @@ namespace N9_QLCAFE
                 Execute(@"SET XACT_ABORT ON; BEGIN TRAN;
                     IF NOT EXISTS (SELECT 1 FROM donhang WITH (UPDLOCK,HOLDLOCK) WHERE MaDonHang=@id AND TrangThaiDon='DangPhucVu')
                         THROW 50001,N'Đơn đã đóng hoặc không còn tồn tại.',1;
-                    IF @remove=1 DELETE chitietdonhang WHERE MaDonHang=@id AND MaDoUong=@drink;
+                    IF @remove=1 DELETE chitietdonhang WHERE MaDonHang=@id AND MaDoUong=@drink
+                        AND SoLuong=@oldQty AND ISNULL(GhiChuMon,N'')=@oldNote;
                     ELSE UPDATE chitietdonhang SET SoLuong=@qty,ThanhTien=@qty*DonGiaTaiThoiDiemGoi,GhiChuMon=@note
-                        WHERE MaDonHang=@id AND MaDoUong=@drink;
+                        WHERE MaDonHang=@id AND MaDoUong=@drink AND SoLuong=@oldQty AND ISNULL(GhiChuMon,N'')=@oldNote;
+                    IF @@ROWCOUNT=0 THROW 50001,N'Món vừa được thay đổi trên thiết bị khác. Hãy tải lại đơn.',1;
                     COMMIT;", Arg("@id", orders.SelectedValue), Arg("@drink", drink), Arg("@remove", remove),
-                    Arg("@qty", quantity), Arg("@note", note));
+                    Arg("@qty", quantity), Arg("@note", note),
+                    Arg("@oldQty", lines.DataKeys[row.RowIndex].Values["SoLuong"]),
+                    Arg("@oldNote", Convert.ToString(lines.DataKeys[row.RowIndex].Values["GhiChuMon"])));
                 SelectOrder(this, EventArgs.Empty);
             });
         }
 
         protected void Pay(object sender, EventArgs e)
         {
-            string method = Request.Form["method"];
-            string phone = (Request.Form["memberPhone"] ?? "").Trim();
-            decimal discount;
-            if (orders.SelectedValue == "" || phone.Length > 15 ||
-                !decimal.TryParse(Request.Form["discount"] ?? "0", NumberStyles.None, CultureInfo.InvariantCulture, out discount) ||
-                discount < 0 || discount > 9999999999999999m || (discount > 0 && !CanDiscount) || (method != "TienMat" && method != "ChuyenKhoan"))
+            string previewOrder = ViewState["PaymentOrder"] as string;
+            if (previewOrder == null || previewOrder != orders.SelectedValue)
             {
-                Show("Kiểm tra đơn, mức giảm giá và phương thức thanh toán.");
+                Show("Hãy kiểm tra thanh toán trước khi hoàn tất.");
+                return;
+            }
+            string method = (string)ViewState["PaymentMethod"];
+            string phone = (string)ViewState["PaymentPhone"];
+            decimal discount = (decimal)ViewState["PaymentDiscount"];
+            decimal expectedSubtotal = (decimal)ViewState["PaymentSubtotal"];
+            decimal expectedSaving = (decimal)ViewState["PaymentSaving"];
+            string expectedTable = (string)ViewState["PaymentTable"];
+            decimal received;
+            string tender = Request.Form["received"] ?? "";
+            if (method == "TienMat" && tender != "" &&
+                (!decimal.TryParse(tender, NumberStyles.None, CultureInfo.InvariantCulture, out received) ||
+                 received < expectedSubtotal - expectedSaving))
+            {
+                Show("Tiền khách đưa chưa đủ. Hãy kiểm tra thanh toán lại.");
                 return;
             }
             string invoice = NewCode("HD");
@@ -181,7 +210,8 @@ namespace N9_QLCAFE
                     SELECT @table=MaBan FROM donhang WHERE MaDonHang=@id;
                     IF @table IS NOT NULL SELECT MaBan FROM banan WITH (UPDLOCK,HOLDLOCK) WHERE MaBan=@table;
                     IF NOT EXISTS (SELECT 1 FROM donhang WITH (UPDLOCK,HOLDLOCK) WHERE MaDonHang=@id AND TrangThaiDon='DangPhucVu'
-                        AND (MaBan=@table OR (MaBan IS NULL AND @table IS NULL)))
+                        AND (MaBan=@table OR (MaBan IS NULL AND @table IS NULL))
+                        AND ISNULL(CONVERT(varchar(12),MaBan),'')=@expectedTable)
                         THROW 50001,N'Đơn đã đóng hoặc vừa chuyển bàn. Hãy tải lại.',1;
                     SELECT @total=SUM(ThanhTien) FROM chitietdonhang WHERE MaDonHang=@id;
                     IF @total IS NULL THROW 50001,N'Đơn chưa có món.',1;
@@ -192,18 +222,27 @@ namespace N9_QLCAFE
                     END;
                     DECLARE @saving decimal(18,2)=ROUND(@total*@rate,2)+@discount;
                     IF @saving>@total THROW 50001,N'Giảm giá vượt tiền món.',1;
+                    IF @total<>@expectedSubtotal OR @saving<>@expectedSaving
+                        THROW 50001,N'Đơn hoặc ưu đãi vừa thay đổi. Vui lòng kiểm tra thanh toán lại.',1;
                     INSERT hoadon (MaHoaDon,NgayGioThanhToan,TongTienMon,GiamGia,TienPhaiTra,PhuongThucThanhToan,MaDonHang,MaNhanVienThuNgan)
                         VALUES (@invoice,GETDATE(),@total,@saving,@total-@saving,@method,@id,@employee);
                     UPDATE donhang SET TrangThaiDon='DaThanhToan' WHERE MaDonHang=@id;
                     UPDATE banan SET TrangThai='Trong' WHERE MaBan=@table;
                     COMMIT;", Arg("@id", orders.SelectedValue), Arg("@phone", phone), Arg("@discount", discount),
-                    Arg("@method", method), Arg("@invoice", invoice), Arg("@employee", Session["MaNhanVien"]));
+                    Arg("@method", method), Arg("@invoice", invoice), Arg("@employee", Session["MaNhanVien"]),
+                    Arg("@expectedSubtotal", expectedSubtotal), Arg("@expectedSaving", expectedSaving),
+                    Arg("@expectedTable", expectedTable));
                 Response.Redirect("GoiMonThanhToan.aspx?hoaDon=" + invoice);
             });
         }
 
         protected void SearchInvoices(object sender, EventArgs e)
         {
+            if (HasPendingLineEdits())
+            {
+                Show("Nhấn Lưu ở dòng món vừa sửa trước khi tra cứu hóa đơn.");
+                return;
+            }
             string code = (Request.Form["invoiceCode"] ?? "").Trim();
             string dateInput = Request.Form["invoiceDate"] ?? "";
             DateTime date;
@@ -243,9 +282,157 @@ namespace N9_QLCAFE
                 invoice["TongTienMon"], invoice["GiamGia"], invoice["TienPhaiTra"]);
         }
 
+        protected void ChooseProduct(object sender, RepeaterCommandEventArgs e)
+        {
+            if (HasPendingLineEdits())
+            {
+                Show("Nhấn Lưu ở dòng món vừa sửa trước khi gọi thêm.");
+                return;
+            }
+            string drink = Convert.ToString(e.CommandArgument);
+            if (orders.SelectedValue == "" || drinks.Items.FindByValue(drink) == null)
+            {
+                Show("Hãy chọn bàn và món còn hàng.");
+                return;
+            }
+            drinks.SelectedValue = drink;
+            SaveDrink(drink, 1, "");
+        }
+
+        protected string ProductImage(object filename)
+        {
+            string name = System.IO.Path.GetFileName(Convert.ToString(filename));
+            return string.IsNullOrWhiteSpace(name) ? ResolveUrl("~/Content/moon-logo.svg")
+                : ResolveUrl("~/Hinhanh/") + Uri.EscapeDataString(name);
+        }
+
+        protected override void OnPreRender(EventArgs e)
+        {
+            if (orderPanel.Visible)
+                SelectOrder(this, EventArgs.Empty);
+            base.OnPreRender(e);
+        }
+
+        protected void CancelEmptyOrder(object sender, EventArgs e)
+        {
+            string selected = orders.SelectedValue;
+            Run(delegate
+            {
+                Execute(@"SET XACT_ABORT ON; BEGIN TRAN;
+                    DECLARE @table int;
+                    SELECT @table=MaBan FROM donhang WHERE MaDonHang=@id;
+                    IF @table IS NOT NULL SELECT MaBan FROM banan WITH (UPDLOCK,HOLDLOCK) WHERE MaBan=@table;
+                    IF NOT EXISTS (SELECT 1 FROM donhang WITH (UPDLOCK,HOLDLOCK)
+                        WHERE MaDonHang=@id AND TrangThaiDon='DangPhucVu'
+                        AND (MaBan=@table OR (MaBan IS NULL AND @table IS NULL)))
+                        THROW 50001,N'Đơn đã thay đổi. Hãy tải lại.',1;
+                    IF EXISTS (SELECT 1 FROM chitietdonhang WHERE MaDonHang=@id)
+                        THROW 50001,N'Đơn đã có món. Hãy kiểm tra lại trước khi đóng bàn.',1;
+                    UPDATE donhang SET TrangThaiDon='DaHuy' WHERE MaDonHang=@id;
+                    UPDATE banan SET TrangThai='Trong' WHERE MaBan=@table;
+                    COMMIT;", Arg("@id", selected));
+                Response.Redirect("BanVaDatBan.aspx");
+            });
+        }
+
+        protected void PreviewPayment(object sender, EventArgs e)
+        {
+            ViewState.Remove("PaymentOrder");
+            string method = Request.Form["method"];
+            string phone = (Request.Form["memberPhone"] ?? "").Trim();
+            decimal discount;
+            string discountInput = Request.Form["discount"];
+            if (string.IsNullOrWhiteSpace(discountInput))
+                discountInput = "0";
+            if (orders.SelectedValue == "" || phone.Length > 15 ||
+                !decimal.TryParse(discountInput, NumberStyles.None, CultureInfo.InvariantCulture, out discount) ||
+                discount < 0 || discount > 9999999999999999m || (discount > 0 && !CanDiscount) ||
+                (method != "TienMat" && method != "ChuyenKhoan"))
+            {
+                Show("Kiểm tra bàn, mức giảm giá và phương thức thanh toán.");
+                return;
+            }
+
+            var rows = Query(ReadLines, Arg("@id", orders.SelectedValue));
+            if (rows.Rows.Count == 0)
+            {
+                Show("Hãy thêm ít nhất một món trước khi thanh toán.");
+                return;
+            }
+            if (HasPendingLineEdits())
+            {
+                Show("Bạn vừa sửa món. Nhấn Lưu ở dòng món trước khi thanh toán.");
+                return;
+            }
+
+            decimal subtotal = rows.AsEnumerable().Sum(row => row.Field<decimal>("ThanhTien"));
+            var active = Query(@"SELECT d.MaBan,ISNULL(b.TenBan,N'Mang đi') AS TenBan
+                FROM donhang d LEFT JOIN banan b ON b.MaBan=d.MaBan
+                WHERE d.MaDonHang=@id AND d.TrangThaiDon='DangPhucVu'", Arg("@id", orders.SelectedValue));
+            if (active.Rows.Count != 1)
+            {
+                Show("Đơn đã đóng. Hãy chọn bàn khác để tiếp tục.");
+                return;
+            }
+            tableTitle.Text = Server.HtmlEncode((string)active.Rows[0]["TenBan"]);
+            decimal rate = 0;
+            string customerName = "Khách lẻ";
+            if (phone != "")
+            {
+                var members = Query("SELECT TenKhachHang,HangThanhVien FROM khachhang WHERE SoDienThoai=@phone", Arg("@phone", phone));
+                if (members.Rows.Count != 1)
+                {
+                    Show("Không tìm thấy thành viên. Kiểm tra SĐT hoặc để trống để bán cho khách lẻ.");
+                    return;
+                }
+                customerName = (string)members.Rows[0]["TenKhachHang"];
+                if (Convert.ToString(members.Rows[0]["HangThanhVien"]) == "VIP")
+                    rate = 0.10m;
+            }
+            decimal saving = Math.Round(subtotal * rate, 2, MidpointRounding.AwayFromZero) + discount;
+            if (saving > subtotal)
+            {
+                Show("Tổng giảm giá vượt tiền món.");
+                return;
+            }
+            ViewState["PaymentOrder"] = orders.SelectedValue;
+            ViewState["PaymentSubtotal"] = subtotal;
+            ViewState["PaymentSaving"] = saving;
+            ViewState["PaymentPhone"] = phone;
+            ViewState["PaymentDiscount"] = discount;
+            ViewState["PaymentMethod"] = method;
+            ViewState["PaymentTable"] = Convert.ToString(active.Rows[0]["MaBan"]);
+            string amount = (subtotal - saving).ToString(CultureInfo.InvariantCulture);
+            string methodName = method == "TienMat" ? "Tiền mặt" : "Chuyển khoản";
+            paymentSummary.Text = "<p class='fw-bold'>" + Server.HtmlEncode(Server.HtmlDecode(tableTitle.Text)) + "</p>" +
+                "<p>" + Server.HtmlEncode(customerName) + " · " + methodName + "</p>" +
+                "<p>Tiền món <strong class='float-end'>" + subtotal.ToString("N0") + " đ</strong></p>" +
+                "<p>Giảm thành viên <strong class='float-end'>" + (saving-discount).ToString("N0") + " đ</strong></p>" +
+                "<p>Giảm thêm <strong class='float-end'>" + discount.ToString("N0") + " đ</strong></p>" +
+                "<p id='paymentAmount' data-amount='" + amount + "' class='border-top pt-3 fs-5 fw-bold'>Cần thu " +
+                "<span class='float-end'>" + (subtotal-saving).ToString("N0") + " đ</span></p>" +
+                "<p class='small text-muted mb-0'>Chỉ hoàn tất sau khi đã nhận đủ tiền " + methodName.ToLowerInvariant() + ".</p>";
+            ClientScript.RegisterStartupScript(GetType(), "paymentPreview",
+                "document.getElementById('cashTender').hidden=" + (method != "TienMat" ? "true" : "false") +
+                ";new bootstrap.Modal(document.getElementById('paymentModal')).show();", true);
+        }
+
         private static bool ValidQuantity(string input, out int quantity)
         {
             return int.TryParse(input, out quantity) && quantity >= 1 && quantity <= 999;
+        }
+
+        private bool HasPendingLineEdits()
+        {
+            foreach (GridViewRow row in lines.Rows)
+            {
+                int quantity;
+                if (!int.TryParse(((TextBox)row.FindControl("lineQuantity")).Text, out quantity) ||
+                    quantity != Convert.ToInt32(lines.DataKeys[row.RowIndex].Values["SoLuong"]) ||
+                    ((TextBox)row.FindControl("lineNote")).Text != Convert.ToString(lines.DataKeys[row.RowIndex].Values["GhiChuMon"]))
+                    return true;
+            }
+            return false;
         }
 
         private static string NewCode(string prefix)
@@ -267,6 +454,7 @@ namespace N9_QLCAFE
 
         private void Show(string text)
         {
+            preserveLineEdits = true;
             message.Text = Server.HtmlEncode(text);
             message.Visible = true;
         }

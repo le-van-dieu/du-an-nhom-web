@@ -39,11 +39,11 @@
                     <div class="menu-label mt-2">Nghiệp vụ Bán hàng</div>
                     <a href="GoiMonThanhToan.aspx" class="sidebar-link <%= Request.Url.AbsolutePath.EndsWith("GoiMonThanhToan.aspx") ? "active" : "" %>">
                         <i class="bi bi-cart-check-fill"></i>
-                        <span>Gọi món & Thanh toán</span>
+                        <span>Bán hàng (POS)</span>
                     </a>
                     <a href="BanVaDatBan.aspx" class="sidebar-link <%= Request.Url.AbsolutePath.EndsWith("BanVaDatBan.aspx") ? "active" : "" %>">
                         <i class="bi bi-grid-3x3-gap-fill"></i>
-                        <span>Quản lý Bàn & Đặt bàn</span>
+                        <span>Bàn & Đặt chỗ</span>
                     </a>
 
                     <div class="menu-label mt-2">Quản trị Danh mục</div>
@@ -86,7 +86,7 @@
 
                     <div class="d-flex align-items-center gap-3">
                         <a href="GoiMonThanhToan.aspx" class="btn btn-sm btn-cafe-primary d-none d-sm-inline-flex align-items-center gap-1">
-                            <i class="bi bi-plus-circle"></i> Tạo đơn mới (F27)
+                            <i class="bi bi-plus-circle"></i> Mở bán hàng
                         </a>
 
                         <!-- Thông tin tài khoản & Phân quyền (F01 - F04) -->

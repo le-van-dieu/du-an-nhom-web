@@ -50,6 +50,34 @@ namespace N9_QLCAFE
                 return "pbkdf2$" + Convert.ToBase64String(key.Salt) + "$" + Convert.ToBase64String(key.GetBytes(32));
         }
 
+        internal static string OpenTableOrder(int table, string employee)
+        {
+            string id = "DH" + Guid.NewGuid().ToString("N").Substring(0, 28);
+            using (var connection = Open())
+            using (var command = new SqlCommand(@"SET XACT_ABORT ON; BEGIN TRAN;
+                DECLARE @state varchar(30),@existing varchar(30);
+                SELECT @state=TrangThai FROM banan WITH (UPDLOCK,HOLDLOCK) WHERE MaBan=@table;
+                IF @state IS NULL THROW 50001,N'Không tìm thấy bàn.',1;
+                SELECT @existing=MaDonHang FROM donhang WITH (UPDLOCK,HOLDLOCK)
+                    WHERE MaBan=@table AND TrangThaiDon='DangPhucVu';
+                IF @existing IS NOT NULL BEGIN
+                    COMMIT; SELECT @existing; RETURN;
+                END;
+                IF @state NOT IN ('Trong','DangPhucVu')
+                    THROW 50001,N'Bàn đã đặt trước. Hãy nhận bàn trong Lịch đặt bàn.',1;
+                IF @state='Trong' AND EXISTS (SELECT 1 FROM datban WHERE MaBan=@table AND TrangThaiDat='DaXacNhan'
+                    AND NgayGioDenDuKien BETWEEN GETDATE() AND DATEADD(hour,2,GETDATE()))
+                    THROW 50001,N'Bàn sắp có khách đặt. Hãy chọn bàn khác hoặc nhận bàn trong Lịch đặt bàn.',1;
+                INSERT donhang (MaDonHang,ThoiGianTao,LoaiDon,TrangThaiDon,MaBan,MaNhanVienTao)
+                    VALUES (@id,GETDATE(),'TaiCho','DangPhucVu',@table,@employee);
+                UPDATE banan SET TrangThai='DangPhucVu' WHERE MaBan=@table;
+                COMMIT; SELECT @id;", connection))
+            {
+                command.Parameters.AddRange(new[] { Arg("@table", table), Arg("@employee", employee), Arg("@id", id) });
+                return (string)command.ExecuteScalar();
+            }
+        }
+
         internal static bool VerifyPassword(string password, string stored)
         {
             if (password.Length > 256)
