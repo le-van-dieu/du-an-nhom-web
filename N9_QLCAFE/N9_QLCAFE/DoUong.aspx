@@ -1,12 +1,11 @@
 
-<%@ Page Title="Quản lý Đồ uống " Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="DoUong.aspx.cs" Inherits="N9_QLCAFE.DoUong" %>
+<%@ Page Title="Quản lý Đồ uống & menu" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="DoUong.aspx.cs" Inherits="N9_QLCAFE.DoUong" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
-    <!-- HEADER -->
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
         <div>
             <span class="badge badge-soft-blue mb-1">Phân hệ F06 - F13 • Phụ trách: Nguyễn Anh Kỳ</span>
@@ -29,7 +28,6 @@
         </div>
     </div>
 
-    <!-- DỮ LIỆU QUẢN LÝ DANH MỤC -->
     <asp:SqlDataSource ID="dsDanhMucQuanLy" runat="server"
         ConnectionString="<%$ ConnectionStrings:quanlyquancafeConnectionString %>"
         SelectCommand="
@@ -46,11 +44,9 @@
             ORDER BY dm.MaDanhMuc">
     </asp:SqlDataSource>
 
-    <!-- THANH TÌM KIẾM VÀ BỘ LỌC -->
     <div class="card-custom p-3 mb-4">
         <div class="row g-3 align-items-center">
 
-            <!-- F09: TÌM KIẾM -->
             <div class="col-12 col-md-4">
                 <div class="input-group">
                     <span class="input-group-text bg-light text-primary border-end-0">
@@ -66,7 +62,6 @@
                 </div>
             </div>
 
-            <!-- F10: LỌC DANH MỤC -->
             <div class="col-6 col-md-3">
                 <asp:DropDownList ID="ddlDanhMucLoc" runat="server"
                     CssClass="form-select"
@@ -74,21 +69,17 @@
                 </asp:DropDownList>
             </div>
 
-            <!-- F12: LỌC TRẠNG THÁI -->
             <div class="col-6 col-md-3">
                 <asp:DropDownList ID="ddlTrangThaiLoc" runat="server"
                     CssClass="form-select"
                     AutoPostBack="true">
-
                     <asp:ListItem Text="-- Trạng thái kinh doanh (F12) --" Value="TatCa" />
                     <asp:ListItem Text="Còn hàng (Đang bán)" Value="ConHang" />
                     <asp:ListItem Text="Hết hàng tạm thời" Value="HetHang" />
                     <asp:ListItem Text="Ngừng kinh doanh (F08)" Value="NgungKinhDoanh" />
-
                 </asp:DropDownList>
             </div>
 
-            <!-- CHUYỂN TAB -->
             <div class="col-12 col-md-2 text-md-end">
                 <ul class="nav nav-pills nav-pills-blue justify-content-end" role="tablist">
                     <li class="nav-item" role="presentation">
@@ -116,17 +107,14 @@
         </div>
     </div>
 
-    <!-- LƯU TAB ĐANG MỞ -->
     <asp:HiddenField ID="hfTabDangMo" runat="server"
         ClientIDMode="Static" Value="#tabBang" />
 
     <div class="tab-content">
 
-        <!-- TAB 1: DANH SÁCH ĐỒ UỐNG -->
         <div class="tab-pane fade show active" id="tabBang" role="tabpanel">
             <div class="card-custom">
 
-                <!-- DỮ LIỆU ĐỒ UỐNG -->
                 <asp:SqlDataSource ID="dsDoUong" runat="server"
                     ConnectionString="<%$ ConnectionStrings:quanlyquancafeConnectionString %>"
                     SelectCommand="
@@ -200,10 +188,8 @@
                             Type="String"
                             DefaultValue="TatCa" />
                     </SelectParameters>
-
                 </asp:SqlDataSource>
 
-                <!-- ĐẾM TỔNG SẢN PHẨM -->
                 <asp:SqlDataSource ID="dsTongDoUong" runat="server"
                     ConnectionString="<%$ ConnectionStrings:quanlyquancafeConnectionString %>"
                     SelectCommand="SELECT COUNT(*) AS TongSo FROM dbo.douong">
@@ -227,7 +213,6 @@
                     </asp:Repeater>
                 </div>
 
-                <!-- BẢNG DANH SÁCH ĐỒ UỐNG -->
                 <div class="table-responsive">
                     <table class="table table-cafe">
                         <thead>
@@ -246,7 +231,6 @@
                             <asp:Repeater ID="rpDoUong" runat="server"
                                 DataSourceID="dsDoUong"
                                 OnItemCommand="rpDoUong_ItemCommand">
-
                                 <ItemTemplate>
                                     <tr>
                                         <td class="fw-semibold">
@@ -268,15 +252,12 @@
                                             <div class="fw-semibold">
                                                 <%# Eval("TenDoUong") %>
                                             </div>
-
                                             <small class="text-muted">
                                                 <%# Eval("MoTa") %>
                                             </small>
                                         </td>
 
-                                        <td>
-                                            <%# Eval("TenDanhMuc") %>
-                                        </td>
+                                        <td><%# Eval("TenDanhMuc") %></td>
 
                                         <td class="fw-semibold text-primary">
                                             <%# Eval("GiaBanHienTai", "{0:N0}") %> đ
@@ -308,7 +289,6 @@
                                         </td>
                                     </tr>
                                 </ItemTemplate>
-
                             </asp:Repeater>
                         </tbody>
                     </table>
@@ -316,7 +296,6 @@
             </div>
         </div>
 
-        <!-- TAB 2: MENU TRỰC QUAN F13 -->
         <div class="tab-pane fade" id="tabLuoiMenu" role="tabpanel">
 
             <asp:SqlDataSource ID="dsMenuConHang" runat="server"
@@ -329,27 +308,22 @@
                         du.HinhAnh,
                         du.MoTa,
                         dm.TenDanhMuc
-
                     FROM dbo.douong du
                     INNER JOIN dbo.danhmuc dm
                         ON du.MaDanhMuc = dm.MaDanhMuc
-
                     WHERE
                         du.TrangThaiKinhDoanh = 'ConHang'
-
                         AND
                         (
                             LEN(LTRIM(RTRIM(ISNULL(@TuKhoa, N'')))) = 0
                             OR du.MaDoUong LIKE N'%' + LTRIM(RTRIM(ISNULL(@TuKhoa, N''))) + N'%'
                             OR du.TenDoUong LIKE N'%' + LTRIM(RTRIM(ISNULL(@TuKhoa, N''))) + N'%'
                         )
-
                         AND
                         (
                             @MaDanhMuc = 0
                             OR du.MaDanhMuc = @MaDanhMuc
                         )
-
                     ORDER BY du.MaDoUong">
 
                 <SelectParameters>
@@ -366,11 +340,9 @@
                         Type="Int32"
                         DefaultValue="0" />
                 </SelectParameters>
-
             </asp:SqlDataSource>
 
             <div class="card-custom p-3">
-
                 <asp:ListView ID="lvMenuConHang" runat="server"
                     DataSourceID="dsMenuConHang">
 
@@ -395,15 +367,11 @@
                                 </div>
 
                                 <div class="card-body">
-
                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                         <span class="badge badge-soft-blue">
                                             <%# Eval("MaDoUong") %>
                                         </span>
-
-                                        <span class="badge badge-soft-success">
-                                            Còn hàng
-                                        </span>
+                                        <span class="badge badge-soft-success">Còn hàng</span>
                                     </div>
 
                                     <h6 class="fw-bold text-dark mb-2">
@@ -421,12 +389,10 @@
 
                                     <div class="d-flex justify-content-between align-items-center border-top pt-3">
                                         <span class="small text-muted">Giá bán</span>
-
                                         <span class="fw-bold text-primary fs-5">
                                             <%# Eval("GiaBanHienTai", "{0:N0}") %> đ
                                         </span>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -435,24 +401,15 @@
                     <EmptyDataTemplate>
                         <div class="p-5 text-center text-muted">
                             <i class="bi bi-cup-straw fs-1 d-block text-secondary mb-2 opacity-50"></i>
-
-                            <div class="fw-semibold">
-                                Chưa có đồ uống nào còn hàng
-                            </div>
-
-                            <small>
-                                Các món có trạng thái Còn hàng sẽ hiển thị tại đây.
-                            </small>
+                            <div class="fw-semibold">Chưa có đồ uống nào còn hàng</div>
+                            <small>Các món có trạng thái Còn hàng sẽ hiển thị tại đây.</small>
                         </div>
                     </EmptyDataTemplate>
-
                 </asp:ListView>
-
             </div>
         </div>
     </div>
 
-    <!-- MODAL THÊM / CHỈNH SỬA ĐỒ UỐNG -->
     <div class="modal fade" id="modalThemDoUong" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content border-0 shadow">
@@ -461,12 +418,10 @@
                     <h6 class="modal-title fw-bold">
                         <i class="bi bi-cup-hot me-2"></i>Thông tin Đồ uống (F06 / F07 / F11)
                     </h6>
-
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
 
                 <div class="modal-body p-4">
-
                     <asp:HiddenField ID="hfCheDo" runat="server"
                         ClientIDMode="Static" Value="Them" />
 
@@ -475,7 +430,6 @@
                             <label class="form-label small fw-semibold">
                                 Mã đồ uống <span class="text-danger">*</span>
                             </label>
-
                             <asp:TextBox ID="txtMaDoUong" runat="server"
                                 ClientIDMode="Static"
                                 CssClass="form-control"
@@ -486,7 +440,6 @@
                             <label class="form-label small fw-semibold">
                                 Tên đồ uống <span class="text-danger">*</span>
                             </label>
-
                             <asp:TextBox ID="txtTenDoUong" runat="server"
                                 ClientIDMode="Static"
                                 CssClass="form-control"
@@ -497,7 +450,6 @@
                             <label class="form-label small fw-semibold">
                                 Danh mục đồ uống (F10) <span class="text-danger">*</span>
                             </label>
-
                             <asp:DropDownList ID="ddlDanhMucForm" runat="server"
                                 CssClass="form-select">
                             </asp:DropDownList>
@@ -507,7 +459,6 @@
                             <label class="form-label small fw-semibold">
                                 Giá bán (VNĐ - Lớn hơn 0) (F11) <span class="text-danger">*</span>
                             </label>
-
                             <asp:TextBox ID="txtGiaBan" runat="server"
                                 ClientIDMode="Static"
                                 CssClass="form-control"
@@ -517,27 +468,29 @@
 
                         <div class="col-md-6">
                             <label class="form-label small fw-semibold">Hình ảnh minh họa</label>
-                            <input type="file" class="form-control" />
-                            <small class="text-muted">Khi chỉnh sửa, hình ảnh hiện tại được giữ nguyên.</small>
+
+                            <asp:FileUpload ID="fuHinhAnh" runat="server"
+                                CssClass="form-control" />
+
+                            <small class="text-muted">
+                                Chọn ảnh JPG, JPEG, PNG, GIF hoặc WEBP.
+                                Khi chỉnh sửa, không chọn ảnh mới thì ảnh hiện tại được giữ nguyên.
+                            </small>
                         </div>
 
                         <div class="col-md-6">
                             <label class="form-label small fw-semibold">Trạng thái kinh doanh (F12)</label>
-
                             <asp:DropDownList ID="ddlTrangThaiForm" runat="server"
                                 ClientIDMode="Static"
                                 CssClass="form-select">
-
                                 <asp:ListItem Text="Còn hàng (Đang phục vụ)" Value="ConHang" />
                                 <asp:ListItem Text="Hết hàng tạm thời" Value="HetHang" />
                                 <asp:ListItem Text="Ngừng kinh doanh (F08)" Value="NgungKinhDoanh" />
-
                             </asp:DropDownList>
                         </div>
 
                         <div class="col-12">
                             <label class="form-label small fw-semibold">Mô tả công thức / hương vị</label>
-
                             <asp:TextBox ID="txtMoTa" runat="server"
                                 ClientIDMode="Static"
                                 CssClass="form-control"
@@ -565,7 +518,6 @@
         </div>
     </div>
 
-    <!-- MODAL QUẢN LÝ DANH MỤC F10 -->
     <div class="modal fade" id="modalDanhMuc" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow">
@@ -575,17 +527,14 @@
                         <i class="bi bi-folder2-open me-2"></i>
                         Quản lý Danh mục Đồ uống (F10)
                     </h6>
-
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
 
                 <div class="modal-body p-4">
-
                     <asp:HiddenField ID="hfMaDanhMuc" runat="server"
                         ClientIDMode="Static" />
 
                     <div class="input-group mb-3">
-
                         <asp:TextBox ID="txtTenDanhMuc" runat="server"
                             ClientIDMode="Static"
                             CssClass="form-control"
@@ -599,7 +548,6 @@
                             CssClass="btn btn-cafe-primary"
                             OnClick="btnLuuDanhMuc_Click"
                             CausesValidation="false" />
-
                     </div>
 
                     <table class="table table-sm table-cafe border">
@@ -616,16 +564,13 @@
                             <asp:Repeater ID="rpDanhMuc" runat="server"
                                 DataSourceID="dsDanhMucQuanLy"
                                 OnItemCommand="rpDanhMuc_ItemCommand">
-
                                 <ItemTemplate>
                                     <tr>
                                         <td class="fw-semibold">
                                             <%# Eval("MaDanhMuc") %>
                                         </td>
 
-                                        <td>
-                                            <%# Eval("TenDanhMuc") %>
-                                        </td>
+                                        <td><%# Eval("TenDanhMuc") %></td>
 
                                         <td class="text-center">
                                             <span class="badge badge-soft-blue">
@@ -634,7 +579,6 @@
                                         </td>
 
                                         <td class="text-end text-nowrap">
-
                                             <asp:LinkButton ID="btnSuaDanhMuc" runat="server"
                                                 CssClass="btn btn-sm btn-cafe-outline me-1"
                                                 CommandName="SuaDanhMuc"
@@ -651,11 +595,9 @@
                                                 OnClientClick="return confirm('Bạn có chắc chắn muốn xóa danh mục này? Danh mục có đồ uống sẽ không thể xóa.');">
                                                 <i class="bi bi-trash"></i>
                                             </asp:LinkButton>
-
                                         </td>
                                     </tr>
                                 </ItemTemplate>
-
                             </asp:Repeater>
                         </tbody>
                     </table>
@@ -664,16 +606,13 @@
                         Nhấn biểu tượng bút để chỉnh sửa tên danh mục.
                         Chỉ có thể xóa danh mục chưa có đồ uống.
                     </small>
-
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- JAVASCRIPT -->
     <script type="text/javascript">
 
-        // Ghi nhớ tab đang mở
         document.addEventListener("shown.bs.tab", function (e) {
             var target = e.target.getAttribute("data-bs-target");
 
@@ -683,13 +622,11 @@
             }
         });
 
-        // Khôi phục tab sau PostBack
         window.addEventListener("load", function () {
             var hidden = document.getElementById("hfTabDangMo");
 
             if (hidden) {
                 var tabId = hidden.value || "#tabBang";
-
                 capNhatBoLocTheoTab(tabId);
 
                 var tabButton = document.querySelector(
@@ -702,7 +639,6 @@
             }
         });
 
-        // Khóa F12 khi đang ở F13
         function capNhatBoLocTheoTab(tabId) {
             var ddl = document.getElementById('<%= ddlTrangThaiLoc.ClientID %>');
 
@@ -715,7 +651,6 @@
             }
         }
 
-        // Mở Modal thêm đồ uống
         function moFormThemDoUong() {
             document.getElementById("hfCheDo").value = "Them";
             document.getElementById("txtMaDoUong").value = "";
@@ -726,7 +661,6 @@
             document.getElementById("ddlTrangThaiForm").value = "ConHang";
         }
 
-        // Mở Modal thêm danh mục
         function moThemDanhMuc() {
             document.getElementById("hfMaDanhMuc").value = "";
             document.getElementById("txtTenDanhMuc").value = "";
