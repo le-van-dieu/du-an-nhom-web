@@ -215,11 +215,12 @@
     <!-- TABS NỘI DUNG -->
     <div class="tab-content">
         
-        <!-- TAB 1: SƠ ĐỒ 2 CẤP -->
+        <!-- TAB 1: SƠ ĐỒ 2 CẤP CHI TIẾT NGHIỆP VỤ -->
         <div class="tab-pane fade show active" id="tabSoDoBan" role="tabpanel">
             <asp:Repeater ID="rptKhuVuc" runat="server" OnItemDataBound="rptKhuVuc_ItemDataBound">
                 <ItemTemplate>
                     <div class="zone-wrapper">
+                        <!-- HEADER KHU VỰC CÓ BADGE TÓM TẮT -->
                         <div class="zone-header-pro d-flex flex-wrap justify-content-between align-items-center gap-2">
                             <div class="d-flex align-items-center gap-2">
                                 <span class="p-2 bg-primary-subtle text-primary rounded-3"><i class="bi bi-geo-alt-fill fs-5"></i></span>
@@ -228,9 +229,16 @@
                                     <small class="text-muted"><%# Eval("GhiChu") %></small>
                                 </div>
                             </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge bg-secondary-subtle text-secondary border px-2 py-1"><%# Eval("TongSoBan") %> bàn</span>
+                                <span class="badge badge-soft-empty px-2 py-1"><%# Eval("SoBanTrong") %> Trống</span>
+                                <span class="badge badge-soft-occupied px-2 py-1"><%# Eval("SoBanDangDung") %> Đang dùng</span>
+                                <span class="badge badge-soft-reserved px-2 py-1"><%# Eval("SoBanDaDat") %> Đặt trước</span>
+                            </div>
                             <asp:HiddenField ID="hfMaKhuVuc" runat="server" Value='<%# Eval("MaKhuVuc") %>' />
                         </div>
 
+                        <!-- DANH SÁCH BÀN CỦA KHU VỰC -->
                         <div class="p-4">
                             <div class="row g-3">
                                 <asp:Repeater ID="rptBanAn" runat="server">
@@ -245,23 +253,39 @@
                                                 </div>
                                                 <h6 class="fw-bold text-dark mb-1"><%#: Eval("TenBan") %> <span class="text-muted fw-normal small">(<%# Eval("SoGhe") %> ghế)</span></h6>
                                                 
+                                                <!-- THÔNG TIN ĐƠN HÀNG HOẶC LỊCH ĐẶT TRỰC QUAN -->
                                                 <div class="p-2 rounded-3 bg-light my-2">
-                                                    <div class="small text-muted"><%# Eval("TrangThai").ToString() == "DangPhucVu" ? string.Format("Tạm tính {0:N0} đ", Eval("TienTamTinh")) : (Eval("TrangThai").ToString() == "DaDat" ? "Có khách đặt bàn" : "Sẵn sàng đón khách") %></div>
+                                                    <%# Eval("TrangThai").ToString() == "DangPhucVu" ? 
+                                                        string.Format("<div class='d-flex justify-content-between small mb-1'><span class='text-muted'><i class='bi bi-receipt me-1'></i>Đơn: <strong>#{0}</strong></span><strong class='text-danger'>{1:N0} đ</strong></div><div class='small text-muted'><i class='bi bi-clock me-1'></i>Vào lúc: {2:HH:mm} ({3} phút)</div>", Eval("MaDonHang"), Eval("TienTamTinh"), Eval("ThoiGianTao"), Eval("SoPhutNgoi")) : 
+                                                        (Eval("TrangThai").ToString() == "DaDat" ? 
+                                                        string.Format("<div class='small fw-semibold text-dark'><i class='bi bi-person me-1 text-primary'></i>{0} ({1} khách)</div><div class='small text-warning-emphasis fw-medium'><i class='bi bi-alarm me-1'></i>Hẹn: <strong>{2:HH:mm}</strong> ({3})</div>", Eval("TenKhachHang"), Eval("SoLuongKhach"), Eval("NgayGioDenDuKien"), Eval("SoDienThoai")) : 
+                                                        "<div class='small text-success fw-medium'><i class='bi bi-check2-circle me-1'></i>Sẵn sàng đón khách</div><div class='small text-muted'>Chưa có order phát sinh</div>") %>
                                                 </div>
 
+                                                <!-- THAO TÁC THEO NGỮ CẢNH CỦA BÀN -->
                                                 <div class="d-flex gap-1 pt-2 border-top">
+                                                    <!-- Nếu bàn trống hoặc đang phục vụ -->
                                                     <asp:LinkButton runat="server" CommandArgument='<%# Eval("MaBan") %>' OnClick="OpenTable"
-                                                        CssClass="btn btn-sm btn-primary flex-grow-1"
+                                                        CssClass='<%# Eval("TrangThai").ToString() == "DangPhucVu" ? "btn btn-sm btn-primary flex-grow-1" : "btn btn-sm btn-outline-success flex-grow-1" %>'
                                                         Visible='<%# Eval("TrangThai").ToString() != "DaDat" %>'>
-                                                        <%# Eval("TrangThai").ToString() == "DangPhucVu" ? "Xem đơn / Gọi thêm" : "Mở bàn & gọi món" %>
+                                                        <%# Eval("TrangThai").ToString() == "DangPhucVu" ? "<i class='bi bi-receipt-cutoff me-1'></i>Thu tiền / Thêm" : "<i class='bi bi-plus-circle me-1'></i>Mở bàn gọi món" %>
                                                     </asp:LinkButton>
-                                                    <a href='BanVaDatBan.aspx?datban=<%# Eval("MaDatBan") %>' class="btn btn-sm btn-outline-primary"
-                                                        <%# Eval("TrangThai").ToString() == "DaDat" ? "" : "hidden" %>>Xem lịch đặt</a>
-                                                    <asp:LinkButton runat="server" CssClass="btn btn-sm btn-outline-primary" CommandArgument='<%# Eval("MaBan") %>' OnClick="EditTable">Sửa</asp:LinkButton>
+
+                                                    <!-- Nếu bàn đã đặt: Nút nhận bàn vào phục vụ ngay -->
+                                                    <asp:LinkButton runat="server" CssClass="btn btn-sm btn-warning text-dark fw-semibold flex-grow-1"
+                                                        CommandArgument='<%# Eval("MaDatBan") %>' OnClick="btnNhanBan_Click"
+                                                        Visible='<%# Eval("TrangThai").ToString() == "DaDat" %>'>
+                                                        <i class="bi bi-box-arrow-in-right me-1"></i>Khách đến • Nhận bàn
+                                                    </asp:LinkButton>
+
+                                                    <asp:LinkButton runat="server" CssClass="btn btn-sm btn-outline-secondary" CommandArgument='<%# Eval("MaBan") %>' OnClick="EditTable" title="Chỉnh sửa thông tin bàn">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </asp:LinkButton>
+                                                    
                                                     <asp:LinkButton ID="btnXoaBan" runat="server" CssClass="btn btn-sm btn-outline-danger" 
                                                         CommandArgument='<%# Eval("MaBan") %>' OnClick="btnXoaBan_Click" 
-                                                        OnClientClick="return confirm('Bạn có chắc chắn muốn xóa bàn này?');"
-                                                        Visible='<%# Eval("TrangThai").ToString() == "Trong" %>'>
+                                                        OnClientClick="return confirm('Bạn có chắc chắn muốn xóa bàn này khỏi hệ thống?');"
+                                                        Visible='<%# Eval("TrangThai").ToString() == "Trong" %>' title="Xóa bàn">
                                                         <i class="bi bi-trash"></i>
                                                     </asp:LinkButton>
                                                 </div>
@@ -285,7 +309,7 @@
                         <small class="text-muted">Quản lý các lịch đặt từ bảng DATBAN & KHACHHANG</small>
                     </div>
                     <div class="d-flex align-items-center gap-2">
-                        <input class="form-control form-control-sm" name="reservationSearch" aria-label="Tìm lịch đặt bàn" placeholder="Mã phiếu, tên hoặc SĐT" />
+                        <asp:TextBox ID="txtSearchDatBan" runat="server" CssClass="form-control form-control-sm" placeholder="Mã phiếu, tên hoặc SĐT"></asp:TextBox>
                         <asp:Button runat="server" CssClass="btn btn-sm btn-outline-primary" Text="Tra cứu" OnClick="txtNgayXemLich_TextChanged" />
                         <asp:TextBox ID="txtNgayXemLich" runat="server" TextMode="Date" CssClass="form-control form-control-sm" AutoPostBack="true" OnTextChanged="txtNgayXemLich_TextChanged" style="width: 150px;"></asp:TextBox>
                         <asp:LinkButton runat="server" CssClass="btn btn-sm btn-primary rounded-3" OnClick="NewReservation">
@@ -333,12 +357,12 @@
         </div>
     </div>
 
-    <!-- MODAL THÊM BÀN (F14) -->
+    <!-- MODAL THÊM / SỬA BÀN -->
     <div class="modal fade" id="modalThemBan" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
                 <div class="modal-header bg-primary text-white py-3">
-                    <h6 class="modal-title fw-bold"><i class="bi bi-grid-3x3-gap me-2"></i>Thêm Mới Bàn Phục Vụ</h6>
+                    <h6 class="modal-title fw-bold"><i class="bi bi-grid-3x3-gap me-2"></i>Thiết Lập Thông Tin Bàn Ăn</h6>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
@@ -359,13 +383,13 @@
                 </div>
                 <div class="modal-footer bg-light py-2 px-4">
                     <button type="button" class="btn btn-sm btn-secondary rounded-3" data-bs-dismiss="modal">Đóng</button>
-                    <asp:Button ID="btnLuuBanMoi" runat="server" Text="Lưu Bàn Mới" CssClass="btn btn-sm btn-primary rounded-3 px-3" OnClick="btnLuuBanMoi_Click" />
+                    <asp:Button ID="btnLuuBanMoi" runat="server" Text="Lưu Dữ Liệu Bàn" CssClass="btn btn-sm btn-primary rounded-3 px-3" OnClick="btnLuuBanMoi_Click" />
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL CHUYỂN BÀN (F19) -->
+    <!-- MODAL CHUYỂN BÀN -->
     <div class="modal fade" id="modalChuyenBan" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
@@ -391,7 +415,7 @@
         </div>
     </div>
 
-    <!-- MODAL QUẢN LÝ KHU VỰC (F17) -->
+    <!-- MODAL QUẢN LÝ KHU VỰC -->
     <div class="modal fade" id="modalKhuVuc" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
@@ -417,7 +441,7 @@
         </div>
     </div>
 
-    <!-- MODAL TẠO ĐẶT BÀN (F21) -->
+    <!-- MODAL TẠO / SỬA ĐẶT BÀN -->
     <div class="modal fade" id="modalTaoDatBan" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
